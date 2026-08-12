@@ -2,15 +2,18 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from app.ml.data.loader import CATEGORICAL_GROUPS, CONTINUOUS_COLS
+
+
 def pgd_attack(model, images, labels, epsilon=0.1, alpha=0.01, steps=40, continuous_cols=None, categorical_groups=None):
     images = images.clone().detach()
     labels = labels.clone().detach()
     loss_fn = nn.CrossEntropyLoss()
     
     if continuous_cols is None:
-        continuous_cols = list(range(images.shape[1]))
+        continuous_cols = CONTINUOUS_COLS
     if categorical_groups is None:
-        categorical_groups = []
+        categorical_groups = CATEGORICAL_GROUPS
         
     ori_images = images.clone().detach()
     
