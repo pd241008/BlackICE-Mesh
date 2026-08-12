@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+:root {
+  --background: #06090a;
+  --foreground: #d7e3e4;
+  --void: #06090a;
+  --panel: #0c1214;
+  --panel-hi: #131c1e;
+  --grid: #1a2426;
+  --ctos: #00f0ff;
+  --ctos-dim: rgba(0, 240, 255, 0.55);
+  --alert: #ff2e2e;
+  --amber: #ffb000;
+  --ghost: #d7e3e4;
+  --ash: #5a6b6e;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-void: var(--void);
+  --color-panel: var(--panel);
+  --color-panel-hi: var(--panel-hi);
+  --color-grid: var(--grid);
+  --color-ctos: var(--ctos);
+  --color-alert: var(--alert);
+  --color-amber: var(--amber);
+  --color-ghost: var(--ghost);
+  --color-ash: var(--ash);
+  --font-mono: var(--font-share-tech-mono), var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  background: var(--void);
+  color: var(--foreground);
+  font-family: var(--font-mono);
+}
+
+/* Gritty CRT / Watch-Dogs backdrop: dark void + faint grid + scanlines. */
+.grid-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 50% -20%, rgba(0, 240, 255, 0.08), transparent 55%),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 100% 100%, 44px 44px, 44px 44px;
+  pointer-events: none;
+}
+
+.scanlines::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.16) 0px,
+    rgba(0, 0, 0, 0.16) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+}
+
+/* --- Neobrutalist primitives: harsh 2px borders, offset shadows, no softness. --- */
+.brutal {
+  border: 2px solid var(--foreground);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.85);
+}
+
+.brutal-ctos {
+  border: 2px solid var(--ctos);
+  box-shadow: 5px 5px 0 rgba(0, 240, 255, 0.25);
+}
+
+.brutal-alert {
+  border: 2px solid var(--alert);
+  box-shadow: 5px 5px 0 rgba(255, 46, 46, 0.25);
+}
+
+/* --- Glassmorphism: floating translucent panels over the void. --- */
+.glass-panel {
+  background: rgba(12, 18, 20, 0.62);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid rgba(215, 227, 228, 0.28);
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(215, 227, 228, 0.06);
+}
+
+.glass-panel-floating {
+  background: rgba(10, 15, 16, 0.55);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 2px solid rgba(0, 240, 255, 0.35);
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.7),
+    0 0 24px rgba(0, 240, 255, 0.08);
+}
+
+/* Terminal affordances */
+.cursor-blink {
+  display: inline-block;
+  width: 0.6em;
+  height: 1em;
+  margin-left: 0.3em;
+  vertical-align: text-bottom;
+  background: var(--ctos);
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0; }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--void);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--grid);
+  border: 2px solid var(--void);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ash);
+}

@@ -1,0 +1,44 @@
+# --- Editor / OS ---
+.vscode/
+.idea/
+.DS_Store
+
+# --- Env ---
+.env
+.env.local
+.env.*.local
+
+# --- Python (ml-optimizer) ---
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# --- Go (gateway-service) ---
+/bin/
+*.exe
+*.test
+*.out
+
+# --- Rust (dacm-engine) ---
+target/
+
+# --- Node / Next.js (dashboard) ---
+node_modules/
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# --- Regenerable datasets ---
+data/
+
+# --- Logs ---
+*.log
+npm-debug.log*
+
+/docs

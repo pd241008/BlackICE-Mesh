@@ -1,0 +1,101 @@
+name: blackice-mesh
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: blackice-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-blackice}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-blackice}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [blackice]
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: blackice-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-blackice}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS:-blackice}
+      POSTGRES_DB: ${POSTGRES_DB:-blackice}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-blackice} -d ${POSTGRES_DB:-blackice}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [blackice]
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  gateway:
+    build: ../gateway-service
+    container_name: blackice-gateway
+    environment:
+      AMQP_URL: amqp://${RABBITMQ_USER:-blackice}:${RABBITMQ_PASS:-blackice}@rabbitmq:5672/
+      DATABASE_URL: postgres://${POSTGRES_USER:-blackice}:${POSTGRES_PASS:-blackice}@postgres:5432/${POSTGRES_DB:-blackice}?sslmode=disable
+      GATEWAY_ADDR: ":8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks: [blackice]
+
+  ml-optimizer:
+    build: ../ml-optimizer
+    container_name: blackice-ml-optimizer
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USER: ${RABBITMQ_USER:-blackice}
+      RABBITMQ_PASS: ${RABBITMQ_PASS:-blackice}
+      JOB_QUEUE: ml.jobs
+      RESULTS_EXCHANGE: ml.results
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks: [blackice]
+    # Uncomment to expose the GPU to the training/attack workers:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  dacm-engine:
+    build: ../dacm-engine
+    container_name: blackice-dacm
+    networks: [blackice]
+
+  dashboard:
+    build: ../dashboard
+    container_name: blackice-dashboard
+    environment:
+      NEXT_PUBLIC_GATEWAY_URL: http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - gateway
+    networks: [blackice]
+
+networks:
+  blackice:
+    driver: bridge
+
+volumes:
+  rabbitmq_data:
+  postgres_data:
