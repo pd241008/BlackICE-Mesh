@@ -4,7 +4,6 @@ from app.ml.attacks.jsma import jsma_attack
 
 
 def evaluate_jsma(model, data_loader, theta=0.4, max_samples=50):
-
     clean_correct = 0
     adv_correct = 0
     total = 0
@@ -19,37 +18,24 @@ def evaluate_jsma(model, data_loader, theta=0.4, max_samples=50):
         if total >= max_samples:
             break
 
-        # -----------------
-        # Clean prediction
-        # -----------------
         output = model(data)
         pred = output.argmax(dim=1)
         clean_correct += (pred == target).sum().item()
 
-        # Confidence before attack
         orig_probs = F.softmax(output, dim=1)
         orig_conf = orig_probs.gather(1, target.unsqueeze(1)).squeeze()
 
-        # -----------------
-        # JSMA Attack
-        # -----------------
         adv = jsma_attack(model, data, target, theta=theta)
 
         adv_output = model(adv)
         adv_pred = adv_output.argmax(dim=1)
         adv_correct += (adv_pred == target).sum().item()
 
-        # -----------------
-        # Confidence drop
-        # -----------------
         adv_probs = F.softmax(adv_output, dim=1)
         adv_conf = adv_probs.gather(1, target.unsqueeze(1)).squeeze()
 
         confidence_drop += (orig_conf - adv_conf).sum().item()
 
-        # -----------------
-        # Correct perturbation count
-        # -----------------
         diff = (adv - data).abs() > 1e-5
         num_perturbed = diff.sum().item()
 

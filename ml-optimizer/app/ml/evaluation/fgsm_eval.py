@@ -1,8 +1,6 @@
-# backend/app/ml/fgsm_eval.py
-# FGSM Evaluation over Multiple Samples
-
 import torch
 from app.ml.attacks.fgsm import fgsm_attack
+
 
 def evaluate_fgsm(model, data_loader, epsilon=0.1, max_samples=100):
     model.eval()
@@ -23,7 +21,7 @@ def evaluate_fgsm(model, data_loader, epsilon=0.1, max_samples=100):
         clean_correct += (init_pred == target).sum().item()
 
         adv_data = fgsm_attack(model, data, target, epsilon)
-        
+
         with torch.no_grad():
             adv_output = model(adv_data)
             adv_pred = adv_output.argmax(dim=1)

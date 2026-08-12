@@ -1,7 +1,5 @@
-# backend/app/ml/evaluate.py
-# Robust Accuracy Evaluation
-
 import torch
+
 
 def evaluate(model, data_loader):
     model.eval()
