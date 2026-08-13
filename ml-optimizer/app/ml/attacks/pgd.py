@@ -17,6 +17,10 @@ def pgd_attack(model, images, labels, epsilon=0.1, alpha=0.01, steps=40, continu
         
     ori_images = images.clone().detach()
     
+    if continuous_cols:
+        random_noise = torch.empty_like(ori_images[:, continuous_cols]).uniform_(-epsilon, epsilon)
+        images[:, continuous_cols] = torch.clamp(ori_images[:, continuous_cols] + random_noise, 0.0, 1.0)
+        
     for i in range(steps):
         images.requires_grad = True
         outputs = model(images)
