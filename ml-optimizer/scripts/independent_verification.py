@@ -32,8 +32,8 @@ from torch.utils.data import TensorDataset, DataLoader
 # ============================================================================
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 TEST_CSV = "./data/nsl-kdd-test.csv"
-BASELINE_WEIGHTS = "app/ml/model.pth"
-HARDENED_WEIGHTS = "app/ml/model_adv.pth"
+BASELINE_WEIGHTS = "models/model.pth"
+HARDENED_WEIGHTS = "models/model_adv.pth"
 
 # Feature layout: 4 continuous + 3 protocol one-hot + 11 service one-hot = 18
 CONTINUOUS_COLS = [0, 1, 2, 3]

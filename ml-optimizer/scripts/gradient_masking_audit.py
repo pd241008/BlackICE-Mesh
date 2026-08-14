@@ -31,8 +31,8 @@ import time
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 TEST_CSV = "./data/nsl-kdd-test.csv"
 TRAIN_CSV = "./data/nsl-kdd-train.csv"
-BASELINE_WEIGHTS = "app/ml/model.pth"
-HARDENED_WEIGHTS = "app/ml/model_adv.pth"
+BASELINE_WEIGHTS = "models/model.pth"
+HARDENED_WEIGHTS = "models/model_adv.pth"
 
 CONTINUOUS_COLS = [0, 1, 2, 3]
 PROTOCOL_GROUP = [4, 5, 6]

@@ -12,7 +12,7 @@ from app.ml.attacks.fgsm import fgsm_attack
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def train_model(epochs=50, lr=1e-3, save_path="app/ml/model.pth"):
+def train_model(epochs=50, lr=1e-3, save_path="models/model.pth"):
     model = TabularMLP().to(DEVICE)
 
     if os.path.exists(save_path):
@@ -51,7 +51,7 @@ def train_model(epochs=50, lr=1e-3, save_path="app/ml/model.pth"):
     return model
 
 
-def adversarial_train(model, train_loader, epsilon=0.1, epochs=50, lr=1e-3, save_path="app/ml/model_adv.pth"):
+def adversarial_train(model, train_loader, epsilon=0.1, epochs=50, lr=1e-3, save_path="models/model_adv.pth"):
     if os.path.exists(save_path):
         print(f"Found pretrained adversarial model at {save_path}. Loading it instead of training.")
         model.load_state_dict(torch.load(save_path, map_location=DEVICE))
@@ -99,7 +99,7 @@ def train_multiple_models(num_models=3, epochs=20):
     for i in range(num_models):
         print(f"\nTraining model {i+1}")
 
-        save_path = f"app/ml/model_{i}.pth"
+        save_path = f"models/model_{i}.pth"
         if os.path.exists(save_path):
             print(f"Found pretrained ensemble model at {save_path}. Skipping training.")
             continue

@@ -157,7 +157,7 @@ def main():
     X = torch.tensor(data[:500, :18], dtype=torch.float32).to(DEVICE)
     y = torch.tensor(data[:500, 18], dtype=torch.long).to(DEVICE)
     
-    model = load_model("app/ml/model_adv.pth")
+    model = load_model("models/model_adv.pth")
     bounds = [torch.eye(len(g), dtype=torch.float32) for g in CATEGORICAL_GROUPS]
     
     # Run buggy version

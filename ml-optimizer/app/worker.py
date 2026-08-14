@@ -50,7 +50,7 @@ class ResourceManager:
         print(f"[ml-optimizer] device={DEVICE}")
         self.base_model = TabularMLP().to(DEVICE)
         self.base_model.load_state_dict(
-            torch.load("app/ml/model.pth", map_location=DEVICE, weights_only=True)
+            torch.load("models/model.pth", map_location=DEVICE, weights_only=True)
         )
         self.base_model.eval()
 

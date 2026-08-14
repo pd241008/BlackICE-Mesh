@@ -3,7 +3,7 @@ from app.ml.models.architecture import TabularMLP
 
 def init_dummy_weights():
     model = TabularMLP()
-    paths = ["app/ml/model.pth", "app/ml/model_0.pth", "app/ml/model_1.pth", "app/ml/model_2.pth"]
+    paths = ["models/model.pth", "models/model_0.pth", "models/model_1.pth", "models/model_2.pth"]
     for p in paths:
         torch.save(model.state_dict(), p)
         print(f"Saved dummy weights to {p}")

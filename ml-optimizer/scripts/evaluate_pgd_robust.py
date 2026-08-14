@@ -94,9 +94,9 @@ def main():
     X, y = load_data(TEST_CSV)
     
     models_to_test = {
-        "Baseline": "app/ml/model.pth",
-        "Legacy FGSM-Hardened": "app/ml/model_adv.pth",
-        "New Curriculum PGD-Hardened": "app/ml/model_adv_pgd_curriculum.pth"
+        "Baseline": "models/model.pth",
+        "Legacy FGSM-Hardened": "models/model_adv.pth",
+        "New Curriculum PGD-Hardened": "models/model_adv_pgd_curriculum.pth"
     }
     
     for name, path in models_to_test.items():
