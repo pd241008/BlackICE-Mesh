@@ -7,7 +7,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load model
 model = TabularMLP().to(DEVICE)
-model.load_state_dict(torch.load("app/ml/model.pth", map_location=DEVICE))
+model.load_state_dict(torch.load("models/model.pth", map_location=DEVICE))
 model.eval()
 
 # Load test data

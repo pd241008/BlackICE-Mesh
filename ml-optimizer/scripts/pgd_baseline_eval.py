@@ -23,8 +23,8 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 from app.ml.attacks.pgd import pgd_attack
 from app.ml.data.loader import CATEGORICAL_GROUPS, CONTINUOUS_COLS, FEATURE_DIM
 
-BASELINE_WEIGHTS = "app/ml/model.pth"
-HARDENED_WEIGHTS = "app/ml/model_adv.pth"
+BASELINE_WEIGHTS = "models/model.pth"
+HARDENED_WEIGHTS = "models/model_adv.pth"
 TEST_CSV = "./data/nsl-kdd-test.csv"
 
 ALL_CAT_IDX = [i for g in CATEGORICAL_GROUPS for i in g]

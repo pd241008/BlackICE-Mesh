@@ -59,7 +59,7 @@ def main():
     model = TabularMLP().to(DEVICE)
     
     # Warm-start from baseline
-    baseline_path = "app/ml/model.pth"
+    baseline_path = "models/model.pth"
     if os.path.exists(baseline_path):
         print(f"Warm-starting from baseline weights: {baseline_path}")
         model.load_state_dict(torch.load(baseline_path, map_location=DEVICE))
@@ -133,7 +133,7 @@ def main():
         if clean_acc < 58.0 and adv_acc < 58.0:
             print("WARNING: Model may be collapsing to majority class!")
             
-    save_path = "app/ml/model_adv_pgd_curriculum.pth"
+    save_path = "models/model_adv_pgd_curriculum.pth"
     torch.save(model.state_dict(), save_path)
     print(f"\nModel saved to {save_path}")
 

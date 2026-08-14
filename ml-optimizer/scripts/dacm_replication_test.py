@@ -28,8 +28,8 @@ from app.ml.data.loader import (
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 TEST_CSV = "./data/nsl-kdd-test.csv"
-BASELINE_WEIGHTS = "app/ml/model.pth"
-HARDENED_WEIGHTS = "app/ml/model_adv.pth"
+BASELINE_WEIGHTS = "models/model.pth"
+HARDENED_WEIGHTS = "models/model_adv.pth"
 
 MIN_VAL, MAX_VAL = 0.0, 1.0
 

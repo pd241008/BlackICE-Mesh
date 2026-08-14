@@ -13,7 +13,7 @@ class EnsembleModel(nn.Module):
         self.num_models = num_models
 
         for i in range(num_models):
-            path = f"app/ml/model_{i}.pth"
+            path = f"models/model_{i}.pth"
 
             try:
                 model = TabularMLP().to(self.device)
