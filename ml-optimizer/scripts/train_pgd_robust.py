@@ -6,8 +6,11 @@ import torch.nn.functional as F
 from torch.optim import Adam
 import numpy as np
 
+import argparse
+
 from app.ml.models.architecture import TabularMLP
-from app.ml.data.loader import get_train_loader, CONTINUOUS_COLS, CATEGORICAL_GROUPS
+from app.ml.data.loader import get_train_loader, get_config
+from app.ml.utils.checkpoint import save_model_checkpoint, load_model_checkpoint
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 EPOCHS = 50
@@ -15,7 +18,7 @@ LR = 1e-3
 EPSILON = 0.15
 PGD_STEPS = 10  # Training PGD steps (typically fewer than eval for speed, but enough to find good adv examples)
 
-def pgd_attack_train(model, images, labels, epsilon, alpha_cont, alpha_cat, steps):
+def pgd_attack_train(model, images, labels, epsilon, alpha_cont, alpha_cat, steps, config):
     """PGD attack adapted for the training loop with configurable alpha_cat"""
     images = images.clone().detach()
     labels = labels.clone().detach()
@@ -23,9 +26,9 @@ def pgd_attack_train(model, images, labels, epsilon, alpha_cont, alpha_cat, step
     ori_images = images.clone().detach()
     
     # Random start on continuous features
-    if CONTINUOUS_COLS:
-        random_noise = torch.empty_like(ori_images[:, CONTINUOUS_COLS]).uniform_(-epsilon, epsilon)
-        images[:, CONTINUOUS_COLS] = torch.clamp(ori_images[:, CONTINUOUS_COLS] + random_noise, 0.0, 1.0)
+    if config.CONTINUOUS_COLS:
+        random_noise = torch.empty_like(ori_images[:, config.CONTINUOUS_COLS]).uniform_(-epsilon, epsilon)
+        images[:, config.CONTINUOUS_COLS] = torch.clamp(ori_images[:, config.CONTINUOUS_COLS] + random_noise, 0.0, 1.0)
         
     for i in range(steps):
         images.requires_grad = True
@@ -35,14 +38,14 @@ def pgd_attack_train(model, images, labels, epsilon, alpha_cont, alpha_cat, step
         cost.backward()
         grad = images.grad
         
-        if CONTINUOUS_COLS:
-            adv_cont = images[:, CONTINUOUS_COLS] + alpha_cont * grad[:, CONTINUOUS_COLS].sign()
-            eta = torch.clamp(adv_cont - ori_images[:, CONTINUOUS_COLS], min=-epsilon, max=epsilon)
-            adv_cont_snapped = torch.clamp(ori_images[:, CONTINUOUS_COLS] + eta, min=0.0, max=1.0)
-            images.data[:, CONTINUOUS_COLS] = adv_cont_snapped
+        if config.CONTINUOUS_COLS:
+            adv_cont = images[:, config.CONTINUOUS_COLS] + alpha_cont * grad[:, config.CONTINUOUS_COLS].sign()
+            eta = torch.clamp(adv_cont - ori_images[:, config.CONTINUOUS_COLS], min=-epsilon, max=epsilon)
+            adv_cont_snapped = torch.clamp(ori_images[:, config.CONTINUOUS_COLS] + eta, min=0.0, max=1.0)
+            images.data[:, config.CONTINUOUS_COLS] = adv_cont_snapped
             
         if alpha_cat > 0:
-            for cat_group in CATEGORICAL_GROUPS:
+            for cat_group in config.CATEGORICAL_GROUPS:
                 adv_cat = images[:, cat_group] + alpha_cat * grad[:, cat_group].sign()
                 nearest_idx = torch.argmax(adv_cat, dim=1)
                 snapped_tensor = F.one_hot(nearest_idx, num_classes=len(cat_group)).float()
@@ -53,20 +56,26 @@ def pgd_attack_train(model, images, labels, epsilon, alpha_cont, alpha_cat, step
     return images
 
 def main():
-    print(f"Starting PGD Adversarial Training on {DEVICE}")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset', type=str, default='nsl-kdd')
+    args = parser.parse_args()
+    
+    config = get_config(args.dataset)
+
+    print(f"Starting PGD Adversarial Training on {DEVICE} for {args.dataset}")
     print("Using Mixed Loss: 0.5 Clean + 0.5 Adversarial")
     
-    model = TabularMLP().to(DEVICE)
+    model = TabularMLP(input_dim=config.FEATURE_DIM).to(DEVICE)
     
     # Warm-start from baseline
-    baseline_path = "models/model.pth"
+    baseline_path = f"models/model_{args.dataset.replace('-', '_')}.pth"
     if os.path.exists(baseline_path):
         print(f"Warm-starting from baseline weights: {baseline_path}")
-        model.load_state_dict(torch.load(baseline_path, map_location=DEVICE))
+        load_model_checkpoint(model, baseline_path, device=DEVICE)
     else:
         print("Baseline weights not found. Starting from scratch.")
         
-    train_loader = get_train_loader(batch_size=256)
+    train_loader = get_train_loader(dataset_name=args.dataset, batch_size=32768)
     optimizer = Adam(model.parameters(), lr=LR)
     
     for epoch in range(EPOCHS):
@@ -104,7 +113,8 @@ def main():
                 epsilon=EPSILON, 
                 alpha_cont=0.01, 
                 alpha_cat=current_alpha_cat, 
-                steps=PGD_STEPS
+                steps=PGD_STEPS,
+                config=config
             )
             model.train() # Back to train mode
             
@@ -133,8 +143,8 @@ def main():
         if clean_acc < 58.0 and adv_acc < 58.0:
             print("WARNING: Model may be collapsing to majority class!")
             
-    save_path = "models/model_adv_pgd_curriculum.pth"
-    torch.save(model.state_dict(), save_path)
+    save_path = f"models/model_adv_pgd_curriculum_{args.dataset.replace('-', '_')}.pth"
+    save_model_checkpoint(model, save_path)
     print(f"\nModel saved to {save_path}")
 
 if __name__ == "__main__":

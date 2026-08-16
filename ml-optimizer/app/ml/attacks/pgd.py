@@ -1,21 +1,36 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
-from app.ml.data.loader import CATEGORICAL_GROUPS, CONTINUOUS_COLS
-
-
-def pgd_attack(model, images, labels, epsilon=0.1, alpha=0.01, steps=40, continuous_cols=None, categorical_groups=None):
+def pgd_attack(model, images, labels, epsilon=0.1, alpha=0.01, steps=40, continuous_cols=None, categorical_groups=None, rsc=False):
     images = images.clone().detach()
     labels = labels.clone().detach()
     loss_fn = nn.CrossEntropyLoss()
     
     if continuous_cols is None:
-        continuous_cols = CONTINUOUS_COLS
+        continuous_cols = []
     if categorical_groups is None:
-        categorical_groups = CATEGORICAL_GROUPS
+        categorical_groups = []
         
     ori_images = images.clone().detach()
+    
+    num_groups = len(categorical_groups)
+    rsc_mask = None
+    if rsc and num_groups > 0:
+        # Uniform sampling per-sample k in [0, num_groups]
+        # E.g. for CICIDS2017 (num_groups=1), k is sampled from {0, 1}
+        # For UNSW-NB15 (num_groups=2), k is sampled from {0, 1, 2}
+        # If num_groups grows significantly, consider revising this to ensure k=1 remains adequately represented.
+        k_samples = torch.randint(0, num_groups + 1, (images.size(0),), device=images.device)
+        
+        if not getattr(pgd_attack, "rsc_logged", False):
+            unique, counts = torch.unique(k_samples, return_counts=True)
+            dist = {int(k): int(c) for k, c in zip(unique, counts)}
+            print(f"[RSC] Sampled k distribution (first batch): {dist}")
+            pgd_attack.rsc_logged = True
+            
+        rand_vals = torch.rand(images.size(0), num_groups, device=images.device)
+        ranks = rand_vals.argsort(dim=1).argsort(dim=1)
+        rsc_mask = ranks < k_samples.unsqueeze(1)
     
     if continuous_cols:
         random_noise = torch.empty_like(ori_images[:, continuous_cols]).uniform_(-epsilon, epsilon)
@@ -44,7 +59,7 @@ def pgd_attack(model, images, labels, epsilon=0.1, alpha=0.01, steps=40, continu
             images.data[:, continuous_cols] = adv_cont_snapped
             
         # 2. Categorical Constraints (DACM) using L_2 Euclidean Nearest Neighbor (argmax)
-        for cat_group in categorical_groups:
+        for g_idx, cat_group in enumerate(categorical_groups):
             # Apply continuous gradient step
             adv_cat = images[:, cat_group] + alpha * grad[:, cat_group].sign()
             
@@ -54,8 +69,13 @@ def pgd_attack(model, images, labels, epsilon=0.1, alpha=0.01, steps=40, continu
             # Snap tensor back to valid discrete structure
             snapped_tensor = F.one_hot(nearest_idx, num_classes=len(cat_group)).float()
             
-            # Inject structurally valid payload back into main tensor
-            images.data[:, cat_group] = snapped_tensor
+            if rsc and rsc_mask is not None:
+                active_mask = rsc_mask[:, g_idx].unsqueeze(1)
+                # Strict freezing: explicitly re-apply ori_images to unselected groups every step
+                images.data[:, cat_group] = torch.where(active_mask, snapped_tensor, ori_images[:, cat_group])
+            else:
+                # Inject structurally valid payload back into main tensor
+                images.data[:, cat_group] = snapped_tensor
             
         images = images.detach()
         
