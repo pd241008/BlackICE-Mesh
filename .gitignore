@@ -42,8 +42,10 @@ next-env.d.ts
 npm-debug.log*
 
 
-results/
+# results/ — raw result dumps excluded but NOT ml-optimizer/results/
 # /docs — re-enabled: research docs should be tracked
 # Exclude raw dataset files specifically
 ml-optimizer/data/
 dacm-engine/data/
+ml-optimizer/data/
+
