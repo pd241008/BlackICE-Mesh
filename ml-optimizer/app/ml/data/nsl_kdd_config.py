@@ -1,0 +1,8 @@
+CONTINUOUS_COLS = [0, 1, 2, 3]
+CATEGORICAL_GROUPS = [
+    [4, 5, 6],
+    [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+]
+FEATURE_DIM = 18
+MIN_VAL = 0.0
+MAX_VAL = 1.0
