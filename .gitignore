@@ -35,7 +35,7 @@ build/
 next-env.d.ts
 
 # --- Regenerable datasets ---
-data/
+# data/ — raw datasets excluded but NOT app/ml/data source code
 
 # --- Logs ---
 *.log
@@ -43,4 +43,7 @@ npm-debug.log*
 
 
 results/
-/docs
+# /docs — re-enabled: research docs should be tracked
+# Exclude raw dataset files specifically
+ml-optimizer/data/
+dacm-engine/data/
