@@ -9,10 +9,14 @@ cd "$(dirname "$0")/.." || exit 1
 mkdir -p logs
 
 CHECK_INTERVAL="${CHECK_INTERVAL:-300}"
-TOTAL_RUNS=27   # 9 seeds x 3 methods
+# Parameterizable via env for other sweeps; defaults supervise the CICIDS2017 46-54 batch.
+SWEEP_SCRIPT="${SWEEP_SCRIPT:-scripts/run_seeds_46_54.sh}"
+CKPT_GLOB="${CKPT_GLOB:-models/unified/model_adv_{hardened,curriculum,rsc}_cicids2017_seed{46,47,48,49,50,51,52,53,54}.pth}"
+TOTAL_RUNS="${TOTAL_RUNS:-27}"   # default: 9 seeds x 3 methods
+WATCHDOG_LOG="${WATCHDOG_LOG:-logs/watchdog.log}"
 
 count_ckpts() {
-    ls models/unified/model_adv_{hardened,curriculum,rsc}_cicids2017_seed{46,47,48,49,50,51,52,53,54}.pth 2>/dev/null | wc -l
+    ls $CKPT_GLOB 2>/dev/null | wc -l
 }
 
 while true; do
@@ -25,13 +29,13 @@ while true; do
     gpu_line=$(nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader 2>/dev/null || echo "nvidia-smi unavailable")
 
     # Newest activity line from whatever job log is freshest.
-    newest_log=$(ls -t logs/train_*.log logs/eval_seed*.log 2>/dev/null | head -1)
+    newest_log=$(ls -t logs/*/train_*.log logs/*/eval_seed*.log logs/train_*.log logs/eval_seed*.log 2>/dev/null | head -1)
     last_line=""
     [ -n "$newest_log" ] && last_line=$(tail -n 1 "$newest_log" | cut -c1-120)
 
     # Scan today's job logs for fatal patterns (only report the newest hit).
     err_hit=""
-    for f in $(ls -t logs/train_*.log logs/eval_seed*.log 2>/dev/null); do
+    for f in $(ls -t logs/*/train_*.log logs/*/eval_seed*.log logs/train_*.log logs/eval_seed*.log 2>/dev/null); do
         err_hit=$(grep -m1 -E "CUDA out of memory|RuntimeError|Killed|Cannot allocate memory" "$f" 2>/dev/null)
         if [ -n "$err_hit" ]; then
             err_hit="IN ${f}: ${err_hit}"
@@ -52,13 +56,13 @@ while true; do
                 echo "no training process — sweep appears COMPLETE"
             else
                 echo "*** no train/eval/driver process with ${ckpts}/${TOTAL_RUNS} checkpoints — RESPAWNING driver ***"
-                setsid nohup bash scripts/run_seeds_46_54.sh < /dev/null >> logs/sweep_driver.log 2>&1 &
+                setsid nohup bash "$SWEEP_SCRIPT" < /dev/null >> "${WATCHDOG_LOG%.log}_driver.log" 2>&1 &
                 echo "[WATCHDOG] ${ts} respawned sweep driver (PID $!)"
             fi
         fi
         [ -n "$err_hit" ] && echo "*** ERROR DETECTED ${err_hit} ***"
         echo ""
-    } >> logs/watchdog.log
+    } >> "$WATCHDOG_LOG"
 
     sleep "$CHECK_INTERVAL"
 done
