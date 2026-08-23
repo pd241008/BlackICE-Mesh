@@ -1,0 +1,14 @@
+=== RAW per-seed k1_acc (n=13, seeds 42-54) ===
+  hardened: 33.45 50.56 64.42 35.45 56.34 66.35 65.91 63.60 57.09 66.70 52.33 63.94 62.21
+curriculum: 30.97 20.97 72.72 53.68 71.63 61.16 43.31 77.13 61.36 69.86 79.28 77.00 66.16
+       rsc: 70.05 69.97 46.29 77.18 75.92 67.15 62.88 43.38 47.61 65.76 39.50 49.58 68.42
+
+=== PRIMARY: n=13 (seeds 42-54) ===
+  clean_acc  F(2,36)=2.14 p=0.132 | hardvscurr d=-4.55 p=0.206 | hardvsrsc d=-5.85 p=0.000704* | currvsrsc d=-1.30 p=0.725
+  k0_acc     F(2,36)=1.41 p=0.258 | hardvscurr d=-6.07 p=0.315 | hardvsrsc d=-8.23 p=0.0175 | currvsrsc d=-2.15 p=0.712
+  k1_acc     F(2,36)=0.26 p=0.775 | hardvscurr d=-3.61 p=0.554 | hardvsrsc d=-3.49 p=0.474 | currvsrsc d=+0.12 p=0.985
+
+=== SENSITIVITY: n=9 (recovery-verified seeds 46-54 only) ===
+  clean_acc  F(2,24)=38.62 p=3.15e-08 | hardvscurr d=-9.27 p=1.35e-24* | hardvsrsc d=-7.31 p=0.000661* | currvsrsc d=+1.95 p=0.189
+  k0_acc     F(2,24)=5.26 p=0.0128 | hardvscurr d=-10.92 p=0.00888* | hardvsrsc d=-5.20 p=0.0765 | currvsrsc d=+5.72 p=0.178
+  k1_acc     F(2,24)=1.99 p=0.158 | hardvscurr d=-5.82 p=0.184 | hardvsrsc d=+3.81 p=0.429 | currvsrsc d=+9.63 p=0.111

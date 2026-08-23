@@ -197,13 +197,13 @@ def main():
     loader = get_test_loader(args.dataset, batch_size=2000)
     safe_name = args.dataset.replace('-', '_')
     models = [
-        ("Hardened", f"models/model_adv_{safe_name}.pth")
+        ("RSC", f"models/model_adv_rsc_{safe_name}.pth")
     ]
     
     # Check if models exist (for NSL-KDD the paths might just be model.pth without dataset name)
     if args.dataset == 'nsl-kdd' and not os.path.exists(models[0][1]):
         models = [
-            ("Hardened", "models/model_adv.pth")
+            ("RSC", "models/model_adv_rsc_nsl_kdd.pth")
         ]
     
     print(f"Phase 0.1 Verification for {args.dataset}")
