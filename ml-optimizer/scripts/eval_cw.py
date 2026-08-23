@@ -42,6 +42,27 @@ def find_checkpoint(dataset_name, safe_name, method, seed):
     return None
 
 
+def _sha256(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for block in iter(lambda: f.read(1 << 20), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+def _delta_stats(adv, orig, config):
+    """L-inf / L2 magnitudes of the perturbation on the continuous subspace."""
+    cols = list(config.CONTINUOUS_COLS)
+    if not cols:
+        return {"max_linf": 0.0, "mean_l2": 0.0}
+    d = (adv - orig)[:, cols]
+    return {
+        "max_linf": d.abs().max().item(),
+        "mean_l2": d.norm(dim=1).mean().item(),
+    }
+
+
 def evaluate_model(method, weight_path, dataset_name, config, args, seed=None):
     set_seed(seed if seed is not None else 42)
     loader = get_test_loader(dataset_name, batch_size=args.batch_size)
@@ -54,17 +75,35 @@ def evaluate_model(method, weight_path, dataset_name, config, args, seed=None):
     result_file = f"results/cw/results_{dataset_name.replace('-', '_')}_{tag}.json"
     os.makedirs("results/cw", exist_ok=True)
 
+    attack_config = {
+        "checkpoint_sha256": _sha256(weight_path),
+        "epsilon": args.epsilon,
+        "steps": args.steps,
+        "lr": args.lr,
+        "kappa": args.kappa,
+        "binary_search_steps": args.binary_search_steps,
+        "chunk_size": args.chunk_size,
+        "batch_size": args.batch_size,
+        "Ks": args.Ks,
+        "selection_metric": "post-hoc cross-entropy on final adversarial example "
+                            "(worst candidate state per sample)",
+        "linf_policy": "delta = eps*tanh(p) on continuous cols; bounded by "
+                       "construction; max_linf verified per batch",
+    }
+
     if os.path.exists(result_file) and not args.overwrite:
         with open(result_file) as f:
             results = json.load(f)
         if results.get("completed_batches") == len(loader):
             print(f"[SKIP] {result_file} already complete.")
             return results
-        results = results
     else:
         results = {"clean_correct": 0, "total": 0,
                    "robust_correct": {str(K): 0 for K in args.Ks},
                    "completed_batches": 0}
+
+    results["attack_config"] = attack_config
+    results.setdefault("batches", [])
 
     start_batch = results["completed_batches"]
 
@@ -77,6 +116,7 @@ def evaluate_model(method, weight_path, dataset_name, config, args, seed=None):
             pred = model(batch_x).argmax(dim=1)
         results["clean_correct"] += (pred == batch_y).sum().item()
 
+        batch_record = {"batch_idx": batch_idx, "n": len(batch_y)}
         for K in args.Ks:
             t0 = time.perf_counter()
             adv = cw_mixed_norm_attack(
@@ -90,11 +130,23 @@ def evaluate_model(method, weight_path, dataset_name, config, args, seed=None):
             correct = (pred == batch_y).sum().item()
             results["robust_correct"][str(K)] += correct
             dt = time.perf_counter() - t0
+            stats = _delta_stats(adv, batch_x, config)
+            if stats["max_linf"] > args.epsilon + 1e-5:
+                raise AssertionError(
+                    f"L-inf budget violated on batch {batch_idx} K={K}: "
+                    f"{stats['max_linf']:.6f} > {args.epsilon}")
+            batch_record[f"K={K}"] = {
+                "correct": correct,
+                **{k: round(v, 6) for k, v in stats.items()},
+                "seconds": round(dt, 2),
+            }
             print(f"Batch {batch_idx + 1}/{len(loader)} | K={K} | "
-                  f"Time: {dt:.2f}s | Acc: {correct / len(batch_y) * 100:.2f}%")
+                  f"Time: {dt:.2f}s | Acc: {correct / len(batch_y) * 100:.2f}% | "
+                  f"max|d|oo: {stats['max_linf']:.4f}")
 
         results["total"] += len(batch_y)
         results["completed_batches"] += 1
+        results["batches"].append(batch_record)
         with open(result_file, "w") as f:
             json.dump(results, f)
 

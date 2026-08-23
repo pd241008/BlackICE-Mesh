@@ -146,6 +146,8 @@ def _cw_continuous(
     confidence_init,
     confidence_factor,
     chunk_size,
+    restarts=1,
+    lambda_l2=1.0,
 ):
     """CW-L2 core loop restricted to continuous columns, chunked for memory."""
     chunks = []
@@ -155,7 +157,7 @@ def _cw_continuous(
             _cw_continuous_chunk(
                 model, images[start_idx:end_idx], labels[start_idx:end_idx],
                 config, epsilon, steps, lr, kappa, binary_search_steps,
-                confidence_init, confidence_factor,
+                confidence_init, confidence_factor, restarts, lambda_l2,
             )
         )
     return torch.cat(chunks, dim=0)
@@ -173,6 +175,8 @@ def _cw_continuous_chunk(
     binary_search_steps,
     confidence_init,
     confidence_factor,
+    restarts=1,
+    lambda_l2=1.0,
 ):
     """Eps-bounded CW-L2 for one chunk; categorical columns frozen."""
     device = images.device
@@ -197,50 +201,69 @@ def _cw_continuous_chunk(
     best_adv = orig.clone()
     best_l2 = torch.full((n,), float("inf"), device=device)
 
-    c = torch.full((n,), float(confidence_init), device=device)
-    c_low = torch.zeros(n, device=device)
-    c_high = torch.full((n,), float("inf"), device=device)
+    for restart in range(restarts):
+        c = torch.full((n,), float(confidence_init), device=device)
+        c_low = torch.zeros(n, device=device)
+        c_high = torch.full((n,), float("inf"), device=device)
 
-    for _ in range(binary_search_steps):
-        p = torch.zeros_like(x_cont, requires_grad=True)
-        optimizer = torch.optim.Adam([p], lr=lr)
+        for _ in range(binary_search_steps):
+            if restart == 0:
+                p = torch.zeros_like(x_cont, requires_grad=True)
+            else:
+                p = (torch.rand_like(x_cont) * 2 - 1).mul_(0.1).requires_grad_(True)
+            optimizer = torch.optim.Adam([p], lr=lr)
 
-        for _ in range(steps):
-            adv_cont = decode(p)
-            logits = model(assemble(adv_cont))
-            f = _margin_loss(logits, labels, kappa)
-            l2_sq = ((adv_cont - x_cont) ** 2).sum(dim=1)
-            loss = (l2_sq + c * f).sum()
+            for step_idx in range(steps):
+                adv_cont = decode(p)
+                logits = model(assemble(adv_cont))
+                f = _margin_loss(logits, labels, kappa)
+                l2_sq = ((adv_cont - x_cont) ** 2).sum(dim=1)
+                loss = (lambda_l2 * l2_sq + c * f).sum()
 
-            optimizer.zero_grad(set_to_none=True)
-            model.zero_grad(set_to_none=True)
-            loss.backward()
-            optimizer.step()
+                optimizer.zero_grad(set_to_none=True)
+                model.zero_grad(set_to_none=True)
+                loss.backward()
+                optimizer.step()
 
-        with torch.no_grad():
-            adv_cont = decode(p)
-            logits = model(assemble(adv_cont))
-            raw = _raw_margin(logits, labels)
-            f = torch.clamp(raw, min=-kappa)
-            l2_sq = ((adv_cont - x_cont) ** 2).sum(dim=1)
+                # Capture transient successes DURING optimization: the L2
+                # term can re-attract a flipped sample before round end,
+                # so end-of-round snapshots alone under-report attack
+                # strength (verified against the PGD K=0 anchor).
+                if (step_idx + 1) % 50 == 0:
+                    with torch.no_grad():
+                        adv_cont = decode(p)
+                        logits = model(assemble(adv_cont))
+                        raw = _raw_margin(logits, labels)
+                        l2_sq_now = ((adv_cont - x_cont) ** 2).sum(dim=1)
+                        ok = (raw < 0) & (l2_sq_now < best_l2)
+                        if ok.any():
+                            best_adv[ok] = assemble(adv_cont)[ok].to(best_adv.dtype)
+                            best_l2[ok] = l2_sq_now[ok]
 
-            # Success is judged on the RAW margin: the clamped hinge can
-            # never go below -kappa (0 when kappa == 0).
-            success = raw < 0
-            better = success & (l2_sq < best_l2)
-            if better.any():
-                rows = assemble(adv_cont)[better]
-                best_adv[better] = rows.to(best_adv.dtype)
-                best_l2[better] = l2_sq[better]
+            with torch.no_grad():
+                adv_cont = decode(p)
+                logits = model(assemble(adv_cont))
+                raw = _raw_margin(logits, labels)
+                f = torch.clamp(raw, min=-kappa)
+                l2_sq = ((adv_cont - x_cont) ** 2).sum(dim=1)
 
-            # Per-sample geometric binary search on the confidence constant.
-            newly_success = success & torch.isinf(c_high)
-            c_high[newly_success] = c[newly_success]
-            failed = (~success) & torch.isinf(c_high)
-            c_low[failed] = c[failed]
-            resolved = ~torch.isinf(c_high)
-            c[resolved] = torch.sqrt(c_low[resolved] * c_high[resolved])
-            unresolved_failure = (~success) & torch.isinf(c_high)
-            c[unresolved_failure] *= confidence_factor
+                # Success is judged on the RAW margin: the clamped hinge can
+                # never go below -kappa (0 when kappa == 0).
+                success = raw < 0
+                better = success & (l2_sq < best_l2)
+                if better.any():
+                    rows = assemble(adv_cont)[better]
+                    best_adv[better] = rows.to(best_adv.dtype)
+                    best_l2[better] = l2_sq[better]
+
+                # Per-sample geometric binary search on the confidence constant.
+                newly_success = success & torch.isinf(c_high)
+                c_high[newly_success] = c[newly_success]
+                failed = (~success) & torch.isinf(c_high)
+                c_low[failed] = c[failed]
+                resolved = ~torch.isinf(c_high)
+                c[resolved] = torch.sqrt(c_low[resolved] * c_high[resolved])
+                unresolved_failure = (~success) & torch.isinf(c_high)
+                c[unresolved_failure] *= confidence_factor
 
     return best_adv
