@@ -1,0 +1,22 @@
+EXHAUSTIVE-STATE K=1 MULTISEED STATISTICS (CICIDS2017, seeds 42-54, n=13/method)
+protocol: PGD-40 exhaustive-state AND-semantics (base + every one-hot state per group)
+integrity: 39/39 partial=false; clean-count gate vs anchors PASS; invariant exh<=snap+0.3pp PASS
+
+hardened    exh: mean= 38.84 sd=16.14 range=[18.28,65.81] | snap-of-attacked mean= 70.63 | mask-gap= 31.79+/-9.63
+curriculum  exh: mean=  7.55 sd= 5.34 range=[1.99,17.08] | snap-of-attacked mean= 69.64 | mask-gap= 62.09+/-19.21
+rsc         exh: mean= 11.69 sd=24.85 range=[0.40,77.84] | snap-of-attacked mean= 70.26 | mask-gap= 58.57+/-22.99
+
+One-way ANOVA (exhaustive): F(2,36)=12.43, p=7.87e-05
+Kruskal-Wallis sensitivity: H=20.02, p=4.48e-05
+[reference] snap-basis ANOVA: F(2,36)=0.01, p=0.99 (null - matches published table)
+
+Welch hardened - curriculum:  +31.29pp CI[+18.55,+44.04] p=0.0000 *
+Welch hardened - rsc:  +27.15pp CI[+5.73,+48.57] p=0.0034 *
+Welch curriculum - rsc:   -4.14pp CI[-23.48,+15.20] p=0.5670 
+
+NOTES:
+- rsc distribution bimodal: s42=77.84 s54=55.54 vs <=3.33 all others (genuine models;
+  invariant + clean-gate passed; same seeds had high snap values). Excluding them,
+  rsc mean ~1.9 and hard-vs-rsc separation tightens.
+- VERDICT: snap-protocol null (p=.77) does NOT survive; exhaustive reveals
+  Hardened >> Curriculum,RSC; Curriculum vs RSC remains null.
