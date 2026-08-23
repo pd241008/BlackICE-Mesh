@@ -1,0 +1,71 @@
+{
+ "checkpoint": {
+  "path": "models/unified/model_adv_rsc_cicids2017_seed53.pth",
+  "sha256": "055962e7bdfe5a822a8176983bb2aa66447863a9f5d48242d6a33695fba0d38d"
+ },
+ "protocol": {
+  "semantics": "exhaustive-state K=1 AND: clean-correct AND survive base pass AND survive EVERY one-hot state of every group (matches cw_exhaustive_k1_survivors enumeration)",
+  "backends": {
+   "pgd40": "unified_pgd_attack steps=40 via eval_protocol (imported)",
+   "cw": "steps=300 x binary 3, lr=.05 (gate-verified vs anchor)",
+   "deepfool": "Foolbox 3.3.4 LinfDeepFoolAttack steps=50 (converged: steps=150 probe identical), output projected to eps-ball (weakening-only), post-hoc misclassification scoring"
+  },
+  "denominator": "% = of 560,102 attacked (clean-correct); fullset pct = x0.89779"
+ },
+ "n_total": 623869,
+ "n_attacked": 560102,
+ "k1_exhaustive": {
+  "pgd40": {
+   "survivors": 11252,
+   "pct": 2.0089
+  },
+  "cw": {
+   "survivors": 17456,
+   "pct": 3.1166
+  },
+  "deepfool": {
+   "survivors": 21769,
+   "pct": 3.8866
+  }
+ },
+ "k0_base_survivors_pct_of_attacked": {
+  "pgd40": 85.51,
+  "deepfool": 97.28,
+  "note": "continuous-only strength varies wildly across optimizers (12pp) while K=1 exhaustive lands in a 1.9pp band"
+ },
+ "nesting_matrix": {
+  "pgd40_exh & cw_exh": {
+   "both": 9632,
+   "pgd_only": 1620,
+   "cw_only": 7824,
+   "jaccard": 0.5049
+  },
+  "cw_exh & deepfool_exh": {
+   "both": 16349,
+   "cw_only": 1107,
+   "df_only": 5420,
+   "jaccard": 0.7147
+  },
+  "deepfool_exh & pgd40_exh": {
+   "both": 11208,
+   "df_only": 10561,
+   "pgd_only": 44,
+   "jaccard": 0.5138,
+   "note": "PGD survivors nested inside DF survivors up to 44/11252=0.39% violations"
+  }
+ },
+ "semantics_decomposition": {
+  "pgd40_snap_survivors_pct": 55.1832,
+  "pgd40_exhaustive_pct": 2.0089,
+  "note": "the 53pp drop is flip-state ENUMERATION, not optimizer choice; yesterday's 'CW strictly harder than PGD' headline compared CW-exhaustive vs PGD-SNAP and is SUPERSEDED: under matched semantics PGD-40 is the strongest attacker (robustness ordering pgd 2.01 < cw 3.12 < df 3.89)"
+ },
+ "abstract_claim_status": "PREDICTIVE -> EVIDENCED: across three optimizers incl. third-party Foolbox, K=1 exhaustive robustness collapses into a 1.9pp band (2.0-3.9%) while continuous-only ranges 85.5-97.3%; flip states dominate the mixed-norm evaluation regardless of optimizer",
+ "artifacts": [
+  "results/foolbox/exh_k1_pgd40_cicids2017_rsc_seed53.json",
+  "results/foolbox/exh_k1_deepfool_cicids2017_rsc_seed53.json",
+  "results/foolbox/masks_exh_k1_pgd40_cicids2017_rsc_seed53.pt",
+  "results/foolbox/masks_exh_k1_deepfool_cicids2017_rsc_seed53.pt",
+  "results/foolbox/exh_k1_deepfool_cicids2017_rsc_seed53_probe150.json",
+  "scripts/eval_deepfool_k1.py"
+ ]
+}
