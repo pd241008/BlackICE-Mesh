@@ -1,0 +1,23 @@
+{
+ "hardened": {
+  "sha": "37c5f4950245d948",
+  "attacked": 502813,
+  "k0_pct": 83.54,
+  "k1_exh_pct": 53.4919,
+  "k1_exh_n": 268964
+ },
+ "curriculum": {
+  "sha": "b71117ac12c47b32",
+  "attacked": 559682,
+  "k0_pct": 90.61,
+  "k1_exh_pct": 3.5492,
+  "k1_exh_n": 19864
+ },
+ "rsc": {
+  "sha": "055962e7bdfe5a82",
+  "attacked": 560102,
+  "k0_pct": 85.51,
+  "k1_exh_pct": 2.0089,
+  "k1_exh_n": 11252
+ }
+}
