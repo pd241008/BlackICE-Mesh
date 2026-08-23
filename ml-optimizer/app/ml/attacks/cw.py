@@ -133,6 +133,75 @@ def cw_mixed_norm_attack(
     return adv[best_idx, torch.arange(batch_size, device=device)]
 
 
+def cw_exhaustive_k1_survivors(
+    model,
+    images,
+    labels,
+    config,
+    epsilon=DEFAULT_EPSILON,
+    steps=300,
+    lr=0.05,
+    kappa=0.0,
+    binary_search_steps=3,
+    chunk_size=8192,
+):
+    """Exhaustive K=1 CW evaluation with canonical AND-semantics.
+
+    Mirrors eval_unified.py's K=1 protocol: a sample survives iff it survives
+    the continuous-only (K=0) attack AND survives the attack under EVERY
+    single-flip categorical state of every group (each state optimized
+    independently; broken = misclassified). Returns a bool tensor.
+    """
+    device = images.device
+    n = images.shape[0]
+
+    # Base case: continuous-only.
+    base_adv = cw_mixed_norm_attack(
+        model, images, labels, config, epsilon=epsilon, steps=steps, lr=lr,
+        kappa=kappa, binary_search_steps=binary_search_steps,
+        chunk_size=chunk_size, K=0,
+    )
+    with torch.no_grad():
+        survivors = model(base_adv).argmax(dim=1) == labels
+
+    cat_indices = [idx for group in config.CATEGORICAL_GROUPS for idx in group]
+    cat_min, cat_max = min(cat_indices), max(cat_indices)
+    orig_cat = images[:, cat_min:cat_max + 1]
+
+    for group in config.CATEGORICAL_GROUPS:
+        rel = [idx - cat_min for idx in group]
+        # Exhaustively enumerate each single-flip state of this group.
+        states = []
+        for i in range(len(rel)):
+            st = orig_cat.clone()
+            st[:, rel] = 0.0
+            st[:, rel[i]] = 1.0
+            states.append(st)
+        all_states = torch.stack(states, dim=0)
+        num_states = all_states.shape[0]
+
+        expanded = images.unsqueeze(0).expand(num_states, -1, -1).clone()
+        expanded[:, :, cat_min:cat_max + 1] = all_states
+        expanded = expanded.reshape(num_states * n, -1).detach()
+        expanded_labels = labels.unsqueeze(0).expand(num_states, -1).reshape(-1)
+
+        adv_rows = _cw_continuous(
+            model, expanded, expanded_labels, config, epsilon, steps, lr,
+            kappa, binary_search_steps, 1e-2, 10.0, chunk_size,
+        )
+        with torch.no_grad():
+            broken = torch.zeros(num_states, n, dtype=torch.bool, device=device)
+            for s in range(0, adv_rows.shape[0], chunk_size):
+                e = min(s + chunk_size, adv_rows.shape[0])
+                pred = model(adv_rows[s:e]).argmax(dim=1)
+                b = pred != expanded_labels[s:e]
+                broken.view(-1)[s:e] = b
+        # Sample broken under this group if ANY single-flip state breaks it.
+        survivors &= ~broken.any(dim=0)
+
+    return survivors
+
+
 def _cw_continuous(
     model,
     images,
