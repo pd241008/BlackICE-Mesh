@@ -2,7 +2,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-def unified_pgd_attack(model, images, labels, epsilon=0.15, alpha=0.01, alpha_cat=None, steps=10, continuous_cols=None, categorical_groups=None, rsc=False):
+def unified_pgd_attack(model, images, labels, epsilon=0.15, alpha=0.01, alpha_cat=None, steps=None, continuous_cols=None, categorical_groups=None, rsc=False):
+    if steps is None:
+        raise ValueError(
+            "unified_pgd_attack requires an explicit steps budget: import "
+            "EVAL_PGD_STEPS (=40) from app.ml.attacks.eval_protocol for evaluation, "
+            "or pass the training budget (10) explicitly. A silent default here "
+            "caused two verified-result discrepancies (alpha_cat drift; CICIDS2017 K=1 mirror)."
+        )
     images = images.clone().detach()
     labels = labels.clone().detach()
     loss_fn = nn.CrossEntropyLoss()
