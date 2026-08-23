@@ -1,0 +1,10 @@
+{
+  "checkpoint": "model_adv_rsc_nsl_kdd_seed42.pth fff152a4...",
+  "n_total": 22543,
+  "pgd_survivors": 17487,
+  "cw_survivors": 17413,
+  "survive_both": 17413,
+  "survive_pgd_only": 74,
+  "survive_cw_only": 0,
+  "jaccard": 0.9958
+}
