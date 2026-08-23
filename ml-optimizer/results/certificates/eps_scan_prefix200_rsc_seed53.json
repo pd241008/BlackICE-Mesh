@@ -1,0 +1,12 @@
+{
+ "description": "IBP certified-K0 vs epsilon, first 200 batches (91,863 attacked), rsc_cicids2017_seed53",
+ "sha256": "055962e7bdfe5a822a8176983bb2aa66447863a9f5d48242d6a33695fba0d38d",
+ "grid": {
+  "0.00": 100.0,
+  "0.01": 4.188,
+  "0.02": 0.41,
+  "0.05": 0.0,
+  "0.10": 0.0
+ },
+ "note": "eps=0 reproduces clean accuracy exactly => propagation verified; operational EVAL_EPSILON=0.15 certifies 0% for all three methods"
+}
