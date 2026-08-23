@@ -1,0 +1,83 @@
+{
+ "checkpoint": {
+  "path": "models/unified/model_adv_rsc_cicids2017_seed53.pth",
+  "sha256": "055962e7bdfe5a822a8176983bb2aa66447863a9f5d48242d6a33695fba0d38d"
+ },
+ "protocol": {
+  "attack": "exhaustive K=1 mixed-norm: survive continuous-only PGD(eps=.15,alpha=.01,steps=40) AND every single-group flip pass (alpha_cat=1.0)",
+  "cw_budget": "300 steps x 3 binary rounds, transient capture every 50, restart=0",
+  "denominators": "pct_of_attacked = /560102 clean-correct; pct_of_total = /623869 (eval_unified.py convention)"
+ },
+ "n_total_test": 623869,
+ "n_attacked": 560102,
+ "cw_k1": {
+  "survivors": 17456,
+  "pct_of_attacked": 3.1166,
+  "pct_of_total": 2.798
+ },
+ "pgd40_k1_runs": [
+  {
+   "label": "mirror bs512",
+   "survivors": 309082,
+   "pct_of_attacked": 55.1832,
+   "pct_of_total": 49.5428
+  },
+  {
+   "label": "canonical-fn import bs512 (seed 12345)",
+   "survivors": 309177,
+   "pct_of_total": 49.558
+  },
+  {
+   "label": "repass bs2000",
+   "survivors": 309788,
+   "pct_of_attacked": 55.3092,
+   "pct_of_total": 49.6559
+  }
+ ],
+ "anchors": {
+  "original_sweep": 49.57595264390441,
+  "fresh_rerun_today": 49.541329990751265,
+  "note": "canonical stores k1_acc over FULL test set; all independent runs agree within +/-0.06pp (MC jitter)"
+ },
+ "nesting_vs_pgd40": {
+  "bs512": {
+   "both": 17423,
+   "pgd_only": 291659,
+   "cw_only": 33,
+   "jaccard": 0.056364
+  },
+  "bs2000": {
+   "both": 17405,
+   "pgd_only": 292383,
+   "cw_only": 51,
+   "jaccard": 0.056174
+  },
+  "interpretation": "CW-survivor set nested inside PGD-survivor set up to boundary noise: violations <=51/17456 (0.29%), far below run-to-run PGD boundary churn (~hundreds). Jaccard low only because set SIZES differ ~17x: CW keeps 3.1% where PGD-40 keeps 55.2% -> exhaustive CW is a strictly harder attacker at K=1 on this model/dataset. Containment recall of CW set within PGD set: 17405/17456 = 99.71%."
+ },
+ "audit_trail": [
+  "BUG1 (fixed): first mirror used training-time PGD_STEPS=10 instead of eval-time 40 -> inflated pgd survival 84.2%; detected via 35pp anchor gap",
+  "BUG2 (resolved): post-fix residual 'gap' was denominator convention (attacked vs full-set); no protocol sensitivity exists - all runs agree on common denominator",
+  "ULP note: FP reduction order gives ~1e-6 logit context-dependence (6/512 rows); aggregate impact bounded by observed jitter (<0.15pp), immaterial",
+  "earlier 'inverted nesting / cw_only=0' claim superseded: artifact of BUG1"
+ ],
+ "artifacts": [
+  "results/cw/k1_survivors_cicids2017_rsc_seed53.json",
+  "results/cw/masks_cicids2017_rsc_seed53.pt",
+  "results/cw/k1_nesting_perbatch_cicids2017_rsc_seed53.json",
+  "results/cw/k1_nesting_perbatch_bs2000_cicids2017_rsc_seed53.json",
+  "results/cw/cw_masks_flat_cicids2017_rsc_seed53.pt",
+  "logs/pgd2000_repass.log"
+ ],
+ "denominator_identity_check": {
+  "ratio": 0.8977878368695992,
+  "checked": "pct_of_total == pct_of_attacked * ratio verified exactly (<1e-9) on integer survivor counts",
+  "anchor_N_samples": 309289,
+  "independent_run_counts": [
+   309082,
+   309177,
+   309788
+  ],
+  "max_spread_pp": 0.115,
+  "mc_bound_95_pp": 0.262
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "checkpoint": {
+  "path": "models/unified/model_adv_rsc_nsl_kdd_seed42.pth",
+  "sha256": "fff152a46fa0f2257a15f87754894e6dfa704656320feda90021adb79a4d8922"
+ },
+ "protocol": {
+  "pgd_steps": 40,
+  "source": "app/ml/attacks/eval_protocol.py (imported)",
+  "cw_budget": "steps=300, lr=0.05, kappa=0, binary_search_steps=3, chunk=8192 (verbatim from gate run)",
+  "batch_size": 512,
+  "denominators": "counts are survivors among clean-correct; pct_fullset divides by n_total"
+ },
+ "n_total": 22543,
+ "n_attacked_clean_correct": 19340,
+ "cw_survivors": 17413,
+ "pgd40_fresh_survivors": 17413,
+ "stored_reference": {
+  "cw_original": 17413,
+  "pgd10_original": 17487,
+  "anchor_k0_fullset_pct": 77.24349
+ },
+ "nesting_cw_within_pgd40": {
+  "both": 17413,
+  "cw_only": 0,
+  "pgd_only": 0,
+  "jaccard": 1.0
+ },
+ "pct_fullset": {
+  "cw": 77.2435,
+  "pgd40": 77.2435
+ }
+}
