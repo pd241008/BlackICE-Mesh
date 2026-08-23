@@ -23,7 +23,7 @@ from app.ml.utils.checkpoint import load_model_checkpoint
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 EPSILON = 0.15
 ALPHA_CONT = 0.01
-PGD_STEPS = 10
+PGD_STEPS = 40  # canonical eval-time budget (eval_unified.py); NOT the training-time 10
 
 
 def _sha256(path):
@@ -59,6 +59,11 @@ def main():
     p.add_argument("--dataset", default="cicids2017")
     p.add_argument("--method", default="rsc")
     p.add_argument("--seed", type=int, default=53)
+    # NOTE: default 512 differs from eval_unified.py's canonical 2000.
+    # FP reduction order depends on tensor shape; the K=1 flip-snap PGD dynamic
+    # amplifies ~1e-6 logit differences into a reproducible but batching-dependent
+    # aggregate (rsc_cicids2017_seed53: 55.18% @512 vs 49.58% @2000). CW side is
+    # unaffected (deterministic given data); PGD-side nesting must state its batch size.
     p.add_argument("--batch-size", type=int, default=512)
     p.add_argument("--steps", type=int, default=300)
     p.add_argument("--binary-search-steps", type=int, default=3)

@@ -1,0 +1,10 @@
+{
+ "checkpoint": "models/unified/model_adv_rsc_cicids2017_seed53.pth",
+ "protocol": "canonical PGD K=1 steps=40 at CANONICAL batch_size=2000; nesting vs reused CW masks (global cursor alignment)",
+ "attacked": 560102,
+ "pgd40_k1_robust_pct": 55.3092,
+ "survive_both": 17405,
+ "survive_pgd_only": 292383,
+ "survive_cw_only": 51,
+ "jaccard": 0.056174
+}

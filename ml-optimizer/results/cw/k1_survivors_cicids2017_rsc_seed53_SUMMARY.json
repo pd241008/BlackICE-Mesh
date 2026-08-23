@@ -1,0 +1,11 @@
+{
+ "checkpoint": "models/unified/model_adv_rsc_cicids2017_seed53.pth",
+ "protocol": "PGD side recomputed at canonical eval-time steps=40; CW masks reused from main run",
+ "attacked": 560102,
+ "cw_k1_robust_pct": 3.1166,
+ "pgd40_k1_robust_pct": 55.1832,
+ "survive_both": 17423,
+ "survive_pgd_only": 291659,
+ "survive_cw_only": 33,
+ "jaccard": 0.056364
+}
