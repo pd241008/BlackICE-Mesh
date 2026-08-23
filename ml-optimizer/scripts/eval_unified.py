@@ -4,15 +4,15 @@ import torch
 import torch.nn.functional as F
 
 from app.ml.attacks.unified_pgd import unified_pgd_attack
+from app.ml.attacks.eval_protocol import EVAL_EPSILON as EPSILON
+from app.ml.attacks.eval_protocol import EVAL_ALPHA_CONT as ALPHA_CONT
+from app.ml.attacks.eval_protocol import EVAL_PGD_STEPS as PGD_STEPS
 
 from app.ml.models.architecture import TabularMLP
 from app.ml.data.loader import get_test_loader, get_config
 from app.ml.utils.checkpoint import load_model_checkpoint
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-EPSILON = 0.15
-PGD_STEPS = 40
-ALPHA_CONT = 0.01
 
 def evaluate_unified(model, dataloader, config, K=1):
     model.eval()

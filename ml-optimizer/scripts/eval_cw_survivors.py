@@ -21,9 +21,9 @@ from app.ml.models.architecture import TabularMLP
 from app.ml.utils.checkpoint import load_model_checkpoint
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-EPSILON = 0.15
-ALPHA_CONT = 0.01
-PGD_STEPS = 40  # canonical eval-time budget (eval_unified.py); NOT the training-time 10
+from app.ml.attacks.eval_protocol import EVAL_EPSILON as EPSILON
+from app.ml.attacks.eval_protocol import EVAL_ALPHA_CONT as ALPHA_CONT
+from app.ml.attacks.eval_protocol import EVAL_PGD_STEPS as PGD_STEPS
 
 
 def _sha256(path):

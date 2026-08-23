@@ -52,7 +52,7 @@
    "cw_only": 51,
    "jaccard": 0.056174
   },
-  "interpretation": "CW-survivor set nested inside PGD-survivor set up to boundary noise: violations <=51/17456 (0.29%), far below run-to-run PGD boundary churn (~hundreds). Jaccard low only because set SIZES differ ~17x: CW keeps 3.1% where PGD-40 keeps 55.2% -> exhaustive CW is a strictly harder attacker at K=1 on this model/dataset."
+  "interpretation": "CW-survivor set nested inside PGD-survivor set up to boundary noise: violations <=51/17456 (0.29%), far below run-to-run PGD boundary churn (~hundreds). Jaccard low only because set SIZES differ ~17x: CW keeps 3.1% where PGD-40 keeps 55.2% -> exhaustive CW is a strictly harder attacker at K=1 on this model/dataset. Containment recall of CW set within PGD set: 17405/17456 = 99.71%."
  },
  "audit_trail": [
   "BUG1 (fixed): first mirror used training-time PGD_STEPS=10 instead of eval-time 40 -> inflated pgd survival 84.2%; detected via 35pp anchor gap",
@@ -67,5 +67,17 @@
   "results/cw/k1_nesting_perbatch_bs2000_cicids2017_rsc_seed53.json",
   "results/cw/cw_masks_flat_cicids2017_rsc_seed53.pt",
   "logs/pgd2000_repass.log"
- ]
+ ],
+ "denominator_identity_check": {
+  "ratio": 0.8977878368695992,
+  "checked": "pct_of_total == pct_of_attacked * ratio verified exactly (<1e-9) on integer survivor counts",
+  "anchor_N_samples": 309289,
+  "independent_run_counts": [
+   309082,
+   309177,
+   309788
+  ],
+  "max_spread_pp": 0.115,
+  "mc_bound_95_pp": 0.262
+ }
 }
