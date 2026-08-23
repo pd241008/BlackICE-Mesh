@@ -87,7 +87,9 @@ out = {"checkpoint_sha256": sha, "batches": BATCHES,
        "n_attacked": results[50]["n_attacked"], "epsilon": EPS}
 for lbl in ("k0", "k1"):
     s50 = torch.cat(results[50][lbl]); s150 = torch.cat(results[150][lbl])
-    assert s50.numel() == results[150][lbl] and False if False else True
+    assert s50.numel() == s150.numel(), "budgets saw different sample counts"
+    assert results[50]["n_attacked"] == results[150]["n_attacked"], \
+        "budgets traversed different attacked populations"
     out[f"{lbl}_survivors_50"] = int(s50.sum())
     out[f"{lbl}_survivors_150"] = int(s150.sum())
     out[f"{lbl}_pct_of_attacked"] = round(100 * int(s50.sum()) / s50.numel(), 4)
