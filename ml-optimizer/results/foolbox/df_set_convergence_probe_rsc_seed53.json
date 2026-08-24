@@ -1,0 +1,14 @@
+{
+ "checkpoint_sha256": "055962e7bdfe5a822a8176983bb2aa66447863a9f5d48242d6a33695fba0d38d",
+ "batches": 30,
+ "n_attacked": 13830,
+ "epsilon": 0.15,
+ "k0_survivors_50": 13454,
+ "k0_survivors_150": 13454,
+ "k0_pct_of_attacked": 97.2813,
+ "k0_set_disagreements": 0,
+ "k1_survivors_50": 568,
+ "k1_survivors_150": 568,
+ "k1_pct_of_attacked": 4.107,
+ "k1_set_disagreements": 0
+}

@@ -1,0 +1,107 @@
+{
+ "description": "RSC outlier forensics: per-seed anchor behavior vs exhaustive K=1 (all 13 CICIDS2017 seeds)",
+ "checkpoint_hashes_distinct": true,
+ "hash_file": "results/unified/checkpoint_hashes_seeds42-54_exhsweep_preflight.json",
+ "training_logs_available": "seeds 46-54 only (42-45 predate logging convention)",
+ "train_endstate_s54": {
+  "avg_loss": 0.2454,
+  "clean_acc": 96.02,
+  "train_robust_acc": 79.14,
+  "sibling_ranges": {
+   "loss": [
+    0.2073,
+    0.2473
+   ],
+   "clean": [
+    95.82,
+    96.6
+   ],
+   "robust": [
+    77.41,
+    86.78
+   ]
+  }
+ },
+ "per_seed": [
+  {
+   "seed": 42,
+   "clean_acc": 80.7653529827576,
+   "exh_k1_pct": 77.8407,
+   "snap_k1_pct": 86.7305
+  },
+  {
+   "seed": 43,
+   "clean_acc": 80.54271008817557,
+   "exh_k1_pct": 2.7056,
+   "snap_k1_pct": 86.8771
+  },
+  {
+   "seed": 44,
+   "clean_acc": 80.53261181433923,
+   "exh_k1_pct": 0.5157,
+   "snap_k1_pct": 57.4739
+  },
+  {
+   "seed": 45,
+   "clean_acc": 89.81308575999128,
+   "exh_k1_pct": 1.038,
+   "snap_k1_pct": 85.9329
+  },
+  {
+   "seed": 46,
+   "clean_acc": 89.77060889385432,
+   "exh_k1_pct": 3.2983,
+   "snap_k1_pct": 84.5728
+  },
+  {
+   "seed": 47,
+   "clean_acc": 89.8568449466154,
+   "exh_k1_pct": 0.4007,
+   "snap_k1_pct": 74.7341
+  },
+  {
+   "seed": 48,
+   "clean_acc": 89.83488520827288,
+   "exh_k1_pct": 2.2694,
+   "snap_k1_pct": 69.9989
+  },
+  {
+   "seed": 49,
+   "clean_acc": 89.79144660177056,
+   "exh_k1_pct": 1.3874,
+   "snap_k1_pct": 48.3078
+  },
+  {
+   "seed": 50,
+   "clean_acc": 89.83793071942988,
+   "exh_k1_pct": 0.9314,
+   "snap_k1_pct": 52.9928
+  },
+  {
+   "seed": 51,
+   "clean_acc": 80.61131423423828,
+   "exh_k1_pct": 3.3308,
+   "snap_k1_pct": 81.5794
+  },
+  {
+   "seed": 52,
+   "clean_acc": 89.81404750035664,
+   "exh_k1_pct": 0.6691,
+   "snap_k1_pct": 43.977
+  },
+  {
+   "seed": 53,
+   "clean_acc": 89.77878368695991,
+   "exh_k1_pct": 2.0089,
+   "snap_k1_pct": 55.1816
+  },
+  {
+   "seed": 54,
+   "clean_acc": 80.50632424435258,
+   "exh_k1_pct": 55.5434,
+   "snap_k1_pct": 84.9865
+  }
+ ],
+ "finding": "Outliers sit in the low-clean (~80.5%) bimodal cluster yet show 25x+ higher exhaustive robustness; no training-failure signature where logs exist (s54 mid-pack on all logged metrics); training-time snap-style robust-acc metric does not separate the modes.",
+ "honest_limits": "Loss-curve evidence unavailable for s42 (no log). Evidence establishes 'real, correctly-evaluated models', NOT a mechanism; bimodality of RSC's exhaustive outcome (2/13 seeds) remains an open empirical observation."
+}
