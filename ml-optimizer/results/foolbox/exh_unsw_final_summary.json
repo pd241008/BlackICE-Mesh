@@ -1,0 +1,130 @@
+{
+ "description": "UNSW-NB15 exhaustive-state K=1 multiseed (n=9) after resume-bug recompute",
+ "gates": "27/27 complete; clean-count vs anchors PASS; exh<=snap invariant PASS",
+ "per_seed": {
+  "hardened_s42": {
+   "snap_of_attacked": 98.3005,
+   "exh": 85.4006
+  },
+  "hardened_s43": {
+   "snap_of_attacked": 96.1723,
+   "exh": 59.7852
+  },
+  "hardened_s44": {
+   "snap_of_attacked": 95.6936,
+   "exh": 62.1796
+  },
+  "hardened_s46": {
+   "snap_of_attacked": 90.8192,
+   "exh": 68.9999
+  },
+  "hardened_s47": {
+   "snap_of_attacked": 98.1248,
+   "exh": 75.3632
+  },
+  "hardened_s48": {
+   "snap_of_attacked": 98.0119,
+   "exh": 79.3001
+  },
+  "hardened_s49": {
+   "snap_of_attacked": 97.4086,
+   "exh": 81.0994
+  },
+  "hardened_s50": {
+   "snap_of_attacked": 98.0268,
+   "exh": 84.0063
+  },
+  "hardened_s51": {
+   "snap_of_attacked": 95.3488,
+   "exh": 67.993
+  },
+  "curriculum_s42": {
+   "snap_of_attacked": 79.0049,
+   "exh": 18.6519
+  },
+  "curriculum_s43": {
+   "snap_of_attacked": 99.4245,
+   "exh": 56.6617
+  },
+  "curriculum_s44": {
+   "snap_of_attacked": 98.9993,
+   "exh": 56.6315
+  },
+  "curriculum_s46": {
+   "snap_of_attacked": 99.6629,
+   "exh": 56.7591
+  },
+  "curriculum_s47": {
+   "snap_of_attacked": 97.7247,
+   "exh": 62.668
+  },
+  "curriculum_s48": {
+   "snap_of_attacked": 97.37,
+   "exh": 64.9811
+  },
+  "curriculum_s49": {
+   "snap_of_attacked": 99.5013,
+   "exh": 57.7392
+  },
+  "curriculum_s50": {
+   "snap_of_attacked": 96.9796,
+   "exh": 57.857
+  },
+  "curriculum_s51": {
+   "snap_of_attacked": 99.6994,
+   "exh": 56.6406
+  },
+  "rsc_s42": {
+   "snap_of_attacked": 98.4116,
+   "exh": 85.4659
+  },
+  "rsc_s43": {
+   "snap_of_attacked": 92.4814,
+   "exh": 64.3454
+  },
+  "rsc_s44": {
+   "snap_of_attacked": 95.1568,
+   "exh": 71.4643
+  },
+  "rsc_s46": {
+   "snap_of_attacked": 98.725,
+   "exh": 86.3431
+  },
+  "rsc_s47": {
+   "snap_of_attacked": 98.0935,
+   "exh": 80.5787
+  },
+  "rsc_s48": {
+   "snap_of_attacked": 98.5733,
+   "exh": 67.0914
+  },
+  "rsc_s49": {
+   "snap_of_attacked": 99.0701,
+   "exh": 81.6016
+  },
+  "rsc_s50": {
+   "snap_of_attacked": 97.2098,
+   "exh": 85.4586
+  },
+  "rsc_s51": {
+   "snap_of_attacked": 99.5395,
+   "exh": 56.5245
+  }
+ },
+ "anova_exhaustive": {
+  "F": 9.44,
+  "p": 0.0009446691073140733,
+  "kruskal_p": 0.002111210441207502
+ },
+ "welch": {
+  "hardened-curriculum": {
+   "diff": 19.5
+  },
+  "hardened-rsc": {
+   "diff": -1.64
+  },
+  "curriculum-rsc": {
+   "diff": -21.14
+  }
+ }
+}

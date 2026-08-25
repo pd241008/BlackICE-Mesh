@@ -139,8 +139,9 @@ def main():
             ok = model(bx).argmax(1) == by
         data, target = bx[ok], by[ok]
         n = data.size(0)
-        agg["n_total"] += bx.size(0)
-        agg["clean_correct"] += int(ok.sum())
+        if bi not in start_idx_set:
+            agg["n_total"] += bx.size(0)
+            agg["clean_correct"] += int(ok.sum())
         if n == 0 or bi in start_idx_set:
             continue
 
