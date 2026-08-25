@@ -2,7 +2,7 @@
  "cicids2017": {
   "anova_F": 12.427,
   "parametric_p": 7.873035690914928e-05,
-  "permutation_p": 0.00015,
+  "permutation_p": 0.00014,
   "n_per_method": 13,
   "masking_gap": {
    "hardened": {
@@ -49,12 +49,14 @@
      26.01
     ]
    }
-  }
+  },
+  "n_permutations": 100000,
+  "perm_resolution_floor": 1e-05
  },
  "unsw_nb15": {
   "anova_F": 9.441,
   "parametric_p": 0.0009446545956616676,
-  "permutation_p": 0.00045,
+  "permutation_p": 0.00027,
   "n_per_method": 9,
   "masking_gap": {
    "hardened": {
@@ -101,6 +103,8 @@
      81.9
     ]
    }
-  }
+  },
+  "n_permutations": 100000,
+  "perm_resolution_floor": 1e-05
  }
 }
