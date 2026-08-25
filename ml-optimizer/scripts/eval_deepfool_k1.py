@@ -190,6 +190,15 @@ def main():
                 os.replace(out_masks + '.part', out_masks)
 
     flat = torch.cat(masks) if masks else torch.zeros(0, dtype=torch.bool)
+    # Regression gate: a COMPLETE run must account for the full test set exactly.
+    # Catches accumulator double-count bugs (e.g. resume-path n_total inflation).
+    KNOWN_TOTALS = {"cicids2017": 623869, "unsw_nb15": 508010, "nsl-kdd": 22543}
+    expected_n = KNOWN_TOTALS.get(args.dataset)
+    is_complete = limit is None
+    if is_complete and expected_n is not None:
+        assert agg["n_total"] == expected_n, (
+            f"n_total={agg['n_total']} != known test-set size {expected_n} for {args.dataset}; "
+            f"accumulator corruption suspected (resume double-count?)")
     summary = {
         "checkpoint_sha256": sha, "attack_backend": args.attack,
         "config": {"df_steps": args.df_steps if args.attack == "deepfool" else None,
