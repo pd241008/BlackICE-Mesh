@@ -1,0 +1,38 @@
+{
+ "models/unified/model_adv_hardened_nsl_kdd_seed42.pth": {
+  "sha256_fresh": "ffbfaede2666a57be488e3ebe290046e968aab531548791be0fb3dab31d4b7f7",
+  "provenance": "post-hoc (no training log)"
+ },
+ "models/unified/model_adv_hardened_nsl_kdd_seed43.pth": {
+  "sha256_fresh": "fbb830b5939701da6ac7e62a48a0a99d90704cdb30d70397460254b59e4a441c",
+  "provenance": "post-hoc (no training log)"
+ },
+ "models/unified/model_adv_hardened_nsl_kdd_seed44.pth": {
+  "sha256_fresh": "fc23ffe2a68d15a17a38e4fd5101f026bfdccc5c8e679daa6aadca1757397aa4",
+  "provenance": "post-hoc (no training log)"
+ },
+ "models/unified/model_adv_curriculum_nsl_kdd_seed42.pth": {
+  "sha256_fresh": "28a1a46d2e2a0ad58a2459ba5fbc48b792152d44c80041d0a3004be3361ccfda",
+  "provenance": "post-hoc (no training log)"
+ },
+ "models/unified/model_adv_curriculum_nsl_kdd_seed43.pth": {
+  "sha256_fresh": "0f3a05de87fd876c33bc3312ac867d794035556337334d465ebebf2dfbce3dbb",
+  "provenance": "post-hoc (no training log)"
+ },
+ "models/unified/model_adv_curriculum_nsl_kdd_seed44.pth": {
+  "sha256_fresh": "4c1e028f6545c2982e4aedbb93a7cb6489c2b04e0ccc76b2d38fd3f9e3dfb2e2",
+  "provenance": "post-hoc (no training log)"
+ },
+ "models/unified/model_adv_rsc_nsl_kdd_seed42.pth": {
+  "sha256_fresh": "fff152a46fa0f2257a15f87754894e6dfa704656320feda90021adb79a4d8922",
+  "provenance": "post-hoc (no training log)"
+ },
+ "models/unified/model_adv_rsc_nsl_kdd_seed43.pth": {
+  "sha256_fresh": "d0284a947231afb5a0f361775ee1154d362be12af08d2eb56a05fa4856a20003",
+  "provenance": "post-hoc (no training log)"
+ },
+ "models/unified/model_adv_rsc_nsl_kdd_seed44.pth": {
+  "sha256_fresh": "ec0bedfa601af72710fbcb69db0d6b8cf5ef836a8c35279da5514a9cf4ee6ad3",
+  "provenance": "post-hoc (no training log)"
+ }
+}
