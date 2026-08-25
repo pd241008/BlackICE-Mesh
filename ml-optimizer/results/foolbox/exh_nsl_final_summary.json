@@ -1,0 +1,74 @@
+[
+ {
+  "method": "hardened",
+  "seed": 42,
+  "attacked": 17684,
+  "k1_survivors": 0,
+  "k0_pct_of_attacked": 95.205,
+  "exh_k1_pct": 0.0
+ },
+ {
+  "method": "hardened",
+  "seed": 43,
+  "attacked": 19330,
+  "k1_survivors": 0,
+  "k0_pct_of_attacked": 86.968,
+  "exh_k1_pct": 0.0
+ },
+ {
+  "method": "hardened",
+  "seed": 44,
+  "attacked": 17791,
+  "k1_survivors": 0,
+  "k0_pct_of_attacked": 95.621,
+  "exh_k1_pct": 0.0
+ },
+ {
+  "method": "curriculum",
+  "seed": 42,
+  "attacked": 18271,
+  "k1_survivors": 0,
+  "k0_pct_of_attacked": 93.629,
+  "exh_k1_pct": 0.0
+ },
+ {
+  "method": "curriculum",
+  "seed": 43,
+  "attacked": 17192,
+  "k1_survivors": 8,
+  "k0_pct_of_attacked": 99.319,
+  "exh_k1_pct": 0.0465
+ },
+ {
+  "method": "curriculum",
+  "seed": 44,
+  "attacked": 17150,
+  "k1_survivors": 8,
+  "k0_pct_of_attacked": 99.703,
+  "exh_k1_pct": 0.0466
+ },
+ {
+  "method": "rsc",
+  "seed": 42,
+  "attacked": 19340,
+  "k1_survivors": 0,
+  "k0_pct_of_attacked": 90.031,
+  "exh_k1_pct": 0.0
+ },
+ {
+  "method": "rsc",
+  "seed": 43,
+  "attacked": 18743,
+  "k1_survivors": 0,
+  "k0_pct_of_attacked": 93.16,
+  "exh_k1_pct": 0.0
+ },
+ {
+  "method": "rsc",
+  "seed": 44,
+  "attacked": 19330,
+  "k1_survivors": 0,
+  "k0_pct_of_attacked": 94.211,
+  "exh_k1_pct": 0.0
+ }
+]
