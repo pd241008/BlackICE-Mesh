@@ -105,6 +105,9 @@ def main():
     groups = [list(g) for g in config.CATEGORICAL_GROUPS]
     EPS = EVAL_EPSILON
 
+    KNOWN_TOTALS = {"cicids2017": 623869, "unsw_nb15": 508010, "nsl-kdd": 22543}
+    expected_n = KNOWN_TOTALS.get(safe_name)
+
     n_total = clean_correct = attacked = 0
     cert_k0 = cert_k1 = 0
     mask_cursor = 0
@@ -145,6 +148,11 @@ def main():
                     gate_violations.append({"batch_idx": bi, "violations": viol})
             records.append({"batch_idx": bi, "n": int(n),
                             "cert_k0": int(m_base.sum()), "cert_k1": int(m_all.sum())})
+
+    if expected_n is not None:
+        assert n_total == expected_n, (
+            f"n_total={n_total} != known test-set size {expected_n} for {safe_name}; "
+            f"accumulator corruption suspected (resume double-count?)")
 
     summary = {
         "checkpoint": {"path": ckpt, "sha256": sha},
