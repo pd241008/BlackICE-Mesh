@@ -96,6 +96,8 @@ def evaluate_unified(model, dataloader, config, K=1):
 
 import argparse
 
+KNOWN_TOTALS = {"cicids2017": 623869, "unsw_nb15": 508010, "nsl-kdd": 22543}
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--seed', type=int, default=None, help='Specific seed to evaluate')
@@ -118,6 +120,7 @@ def main():
         config = get_config(dataset)
         loader = get_test_loader(dataset, batch_size=2000)
         safe_name = dataset.replace('-', '_')
+        expected_n = KNOWN_TOTALS.get(safe_name)
         
         for method in methods:
             seed_suffix = f"_seed{args.seed}" if args.seed is not None else ""
@@ -138,6 +141,10 @@ def main():
             _, robust_correct_k1, _ = evaluate_unified(model, loader, config, K=1)
             
             total_eval = len(loader.dataset)
+            if expected_n is not None:
+                assert total_eval == expected_n, (
+                    f"total_eval={total_eval} != known test-set size {expected_n} for {dataset}; "
+                    f"loader/dataset mismatch?")
             clean_acc = clean_correct / total_eval * 100
             rob_k0_acc = robust_correct_k0 / total_eval * 100
             rob_k1_acc = robust_correct_k1 / total_eval * 100
