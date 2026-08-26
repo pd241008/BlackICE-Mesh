@@ -1,0 +1,46 @@
+{
+ "checkpoint": {
+  "path": "models/unified/model_adv_curriculum_cicids2017_seed44.pth",
+  "sha256": "5bb11b1be331d3a45e8c9c344d4626bf68d349d09d1ad94c32037a37ea831d7d"
+ },
+ "dataset": "cicids2017",
+ "method": "curriculum",
+ "seed": 44,
+ "epsilon": 0.15,
+ "threat_model": "mixed-norm: L\u221e continuous + L0 categorical exhaustive",
+ "n_total": 623869,
+ "n_clean_correct": 560290,
+ "crown_k0": {
+  "mean": -112.0469,
+  "median": -122.2982,
+  "std": 25.9914,
+  "min": -183.9441,
+  "pct_positive": 0.0
+ },
+ "crown_k1": {
+  "mean": -112.825,
+  "median": -122.6141,
+  "std": 26.0192,
+  "min": -187.8118,
+  "pct_positive": 0.0
+ },
+ "ibp_k0": {
+  "mean": -160.7776,
+  "median": -173.8529,
+  "std": 33.8848,
+  "min": -260.523,
+  "pct_positive": 0.0
+ },
+ "ibp_k1": {
+  "mean": -161.8525,
+  "median": -174.6152,
+  "std": 34.51,
+  "min": -260.523,
+  "pct_positive": 0.0
+ },
+ "soundness_check": {
+  "crown_k0_le_exhaustive_empirical": "see comparison script",
+  "crown_k1_le_ibp_k1": false,
+  "crown_k1_ge_ibp_k1": true
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "checkpoint": {
+  "path": "models/unified/model_adv_curriculum_nsl_kdd_seed44.pth",
+  "sha256": "4c1e028f6545c2982e4aedbb93a7cb6489c2b04e0ccc76b2d38fd3f9e3dfb2e2"
+ },
+ "dataset": "nsl-kdd",
+ "method": "curriculum",
+ "seed": 44,
+ "epsilon": 0.15,
+ "threat_model": "mixed-norm: L\u221e continuous + L0 categorical exhaustive",
+ "n_total": 22543,
+ "n_clean_correct": 17150,
+ "crown_k0": {
+  "mean": 0.1485,
+  "median": 0.1661,
+  "std": 0.1602,
+  "min": -0.6541,
+  "pct_positive": 83.84
+ },
+ "crown_k1": {
+  "mean": -1.3556,
+  "median": -1.2421,
+  "std": 0.2543,
+  "min": -2.4639,
+  "pct_positive": 0.0
+ },
+ "ibp_k0": {
+  "mean": -1.8271,
+  "median": -1.6658,
+  "std": 0.369,
+  "min": -2.9578,
+  "pct_positive": 0.0
+ },
+ "ibp_k1": {
+  "mean": -3.36,
+  "median": -3.3369,
+  "std": 0.128,
+  "min": -4.4543,
+  "pct_positive": 0.0
+ },
+ "soundness_check": {
+  "crown_k0_le_exhaustive_empirical": "see comparison script",
+  "crown_k1_le_ibp_k1": false,
+  "crown_k1_ge_ibp_k1": true
+ }
+}

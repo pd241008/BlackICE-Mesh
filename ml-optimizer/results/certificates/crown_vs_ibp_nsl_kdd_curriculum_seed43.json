@@ -1,0 +1,46 @@
+{
+ "checkpoint": {
+  "path": "models/unified/model_adv_curriculum_nsl_kdd_seed43.pth",
+  "sha256": "0f3a05de87fd876c33bc3312ac867d794035556337334d465ebebf2dfbce3dbb"
+ },
+ "dataset": "nsl-kdd",
+ "method": "curriculum",
+ "seed": 43,
+ "epsilon": 0.15,
+ "threat_model": "mixed-norm: L\u221e continuous + L0 categorical exhaustive",
+ "n_total": 22543,
+ "n_clean_correct": 17192,
+ "crown_k0": {
+  "mean": 0.2858,
+  "median": 0.1689,
+  "std": 0.3086,
+  "min": -0.798,
+  "pct_positive": 83.64
+ },
+ "crown_k1": {
+  "mean": -1.733,
+  "median": -1.6442,
+  "std": 0.17,
+  "min": -2.6339,
+  "pct_positive": 0.0
+ },
+ "ibp_k0": {
+  "mean": -1.7748,
+  "median": -1.7361,
+  "std": 0.4039,
+  "min": -3.4481,
+  "pct_positive": 0.0
+ },
+ "ibp_k1": {
+  "mean": -3.7985,
+  "median": -3.8751,
+  "std": 0.2906,
+  "min": -4.9531,
+  "pct_positive": 0.0
+ },
+ "soundness_check": {
+  "crown_k0_le_exhaustive_empirical": "see comparison script",
+  "crown_k1_le_ibp_k1": false,
+  "crown_k1_ge_ibp_k1": true
+ }
+}

@@ -1,0 +1,46 @@
+{
+ "checkpoint": {
+  "path": "models/unified/model_adv_hardened_nsl_kdd_seed42.pth",
+  "sha256": "ffbfaede2666a57be488e3ebe290046e968aab531548791be0fb3dab31d4b7f7"
+ },
+ "dataset": "nsl-kdd",
+ "method": "hardened",
+ "seed": 42,
+ "epsilon": 0.15,
+ "threat_model": "mixed-norm: L\u221e continuous + L0 categorical exhaustive",
+ "n_total": 22543,
+ "n_clean_correct": 17684,
+ "crown_k0": {
+  "mean": -0.101,
+  "median": 0.0794,
+  "std": 0.4154,
+  "min": -1.0835,
+  "pct_positive": 51.87
+ },
+ "crown_k1": {
+  "mean": -1.6695,
+  "median": -1.4415,
+  "std": 0.3219,
+  "min": -2.802,
+  "pct_positive": 0.0
+ },
+ "ibp_k0": {
+  "mean": -2.4606,
+  "median": -2.5934,
+  "std": 0.5349,
+  "min": -3.5523,
+  "pct_positive": 0.0
+ },
+ "ibp_k1": {
+  "mean": -4.1158,
+  "median": -3.6584,
+  "std": 0.5733,
+  "min": -5.0732,
+  "pct_positive": 0.0
+ },
+ "soundness_check": {
+  "crown_k0_le_exhaustive_empirical": "see comparison script",
+  "crown_k1_le_ibp_k1": false,
+  "crown_k1_ge_ibp_k1": true
+ }
+}
