@@ -101,6 +101,10 @@ def main():
     parser.add_argument('--seed', type=int, default=None, help='Specific seed to evaluate')
     parser.add_argument('--datasets', type=str, nargs='+', default=None,
                         help='Datasets to evaluate (default: all). E.g. --datasets cicids2017')
+    parser.add_argument('--suffix', type=str, default="",
+                        help='Filename suffix; use e.g. _rerun for re-measurements so archival anchors stay immutable')
+    parser.add_argument('--force', action='store_true',
+                        help='Overwrite existing eval json at the exact target path (requires intent)')
     args = parser.parse_args()
 
     all_datasets = ['nsl-kdd', 'cicids2017', 'unsw_nb15']
@@ -122,9 +126,9 @@ def main():
                 print(f"Skipping {method} - path not found: {path}")
                 continue
             
-            json_path = f"results/unified/eval_{method}_{safe_name}{seed_suffix}.json"
-            if os.path.exists(json_path):
-                print(f"Skipping {method} - eval already exists at {json_path}")
+            json_path = f"results/unified/eval_{method}_{safe_name}{seed_suffix}{args.suffix}.json"
+            if os.path.exists(json_path) and not args.force:
+                print(f"Skipping {method} - eval already exists at {json_path} (use --force to overwrite)")
                 continue
                 
             model = TabularMLP(input_dim=config.FEATURE_DIM).to(DEVICE)
@@ -140,7 +144,7 @@ def main():
             
             print(f"[{method}] Clean: {clean_acc:.2f}% | K=0: {rob_k0_acc:.2f}% | K=1: {rob_k1_acc:.2f}%")
             
-            with open(f"results/unified/eval_{method}_{safe_name}{seed_suffix}.json", "w") as f:
+            with open(f"results/unified/eval_{method}_{safe_name}{seed_suffix}{args.suffix}.json", "w") as f:
                 json.dump({
                     "clean_acc": clean_acc,
                     "k0_acc": rob_k0_acc,
