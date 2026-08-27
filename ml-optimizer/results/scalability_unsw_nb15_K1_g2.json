@@ -1,0 +1,100 @@
+{
+  "dataset": "unsw_nb15",
+  "method": "rsc",
+  "seed": 42,
+  "checkpoint_sha256": "6a42ed41d1ec760d3f1eb26c77f49938cd8e3db89451c67f9a777b1d600e434c",
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce RTX 4050 Laptop GPU",
+  "device_note": "Wall-clock times use GPU inference and are not directly comparable to the production evaluator (eval_deepfool_k1.py) which hardcodes CPU. The reported quantity is the relative scaling trend across group counts, not an absolute cost figure.",
+  "K": 1,
+  "eligible_groups": [
+    2
+  ],
+  "num_candidates_enumerated": 14,
+  "num_candidates_minimal": 13,
+  "redundant_overhead": 1,
+  "num_samples": 500,
+  "total_samples_seen": 512,
+  "clean_accuracy_pct": 98.8281,
+  "total_wallclock_seconds": 1.433,
+  "avg_wallclock_per_sample": 0.002867,
+  "avg_wallclock_per_candidate": 0.102389,
+  "pgd_steps": 40,
+  "epsilon": 0.15,
+  "k0_survivors": 499,
+  "kk_survivors": 492,
+  "k0_robust_pct": 99.8,
+  "kk_robust_pct": 98.4,
+  "candidate_times": [
+    {
+      "candidate_idx": 0,
+      "label": "base_K0",
+      "wallclock_seconds": 0.14978
+    },
+    {
+      "candidate_idx": 1,
+      "label": "[(0, 0)]",
+      "wallclock_seconds": 0.083782
+    },
+    {
+      "candidate_idx": 2,
+      "label": "[(0, 1)]",
+      "wallclock_seconds": 0.080373
+    },
+    {
+      "candidate_idx": 3,
+      "label": "[(0, 2)]",
+      "wallclock_seconds": 0.079333
+    },
+    {
+      "candidate_idx": 4,
+      "label": "[(0, 3)]",
+      "wallclock_seconds": 0.093488
+    },
+    {
+      "candidate_idx": 5,
+      "label": "[(0, 4)]",
+      "wallclock_seconds": 0.331964
+    },
+    {
+      "candidate_idx": 6,
+      "label": "[(0, 5)]",
+      "wallclock_seconds": 0.062519
+    },
+    {
+      "candidate_idx": 7,
+      "label": "[(0, 6)]",
+      "wallclock_seconds": 0.057289
+    },
+    {
+      "candidate_idx": 8,
+      "label": "[(0, 7)]",
+      "wallclock_seconds": 0.069156
+    },
+    {
+      "candidate_idx": 9,
+      "label": "[(0, 8)]",
+      "wallclock_seconds": 0.07353
+    },
+    {
+      "candidate_idx": 10,
+      "label": "[(0, 9)]",
+      "wallclock_seconds": 0.071255
+    },
+    {
+      "candidate_idx": 11,
+      "label": "[(0, 10)]",
+      "wallclock_seconds": 0.06944
+    },
+    {
+      "candidate_idx": 12,
+      "label": "[(0, 11)]",
+      "wallclock_seconds": 0.078493
+    },
+    {
+      "candidate_idx": 13,
+      "label": "[(0, 12)]",
+      "wallclock_seconds": 0.130062
+    }
+  ]
+}
