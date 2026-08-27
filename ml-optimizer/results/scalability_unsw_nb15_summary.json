@@ -1,0 +1,124 @@
+{
+  "title": "Evaluator Scalability & Complexity Study — UNSW-NB15 Full-Scale",
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 4050 Laptop GPU",
+    "vram": "6GB",
+    "cpu": "10-core x86_64",
+    "ram": "11GB"
+  },
+  "device_note": "All runs on GPU. Production evaluator (eval_deepfool_k1.py) hardcodes CPU. Reported times reflect relative scaling trends, not absolute production costs.",
+  "protocol": {
+    "pgd_steps": 40,
+    "epsilon": 0.15,
+    "alpha_continuous": 0.01,
+    "alpha_categorical": 0.0,
+    "semantics": "exhaustive-state AND (survival = attack fails under every candidate state)",
+    "num_samples": 500,
+    "clean_accuracy": "98.83%"
+  },
+  "checkpoint": {
+    "file": "models/unified/model_adv_rsc_unsw_nb15_seed42.pth",
+    "sha256": "6a42ed41d1ec760d3f1eb26c77f49938cd8e3db89451c67f9a777b1d600e434c"
+  },
+  "dataset": {
+    "name": "UNSW-NB15",
+    "feature_dim": 79,
+    "groups": {
+      "G0_proto": {"cols": [0,1,2,3,4,5,6,7,8,9,10], "size": 11},
+      "G1_state": {"cols": [11,12,13,14,15,16,17,18,19,20,21], "size": 11},
+      "G2_service": {"cols": [22,23,24,25,26,27,28,29,30,31,32,33,34], "size": 13},
+      "G3_is_sm_ips_ports": {"cols": [35,36], "size": 2},
+      "G4_is_ftp_login": {"cols": [37,38,39,40], "size": 4}
+    }
+  },
+  "complexity_formula": {
+    "formula": "T(N, K, G) = N × C(K, |G|) × t_pgd",
+    "C_K_G": "1 + Σ|g_i| + Σ_{i<j}|g_i|×|g_j|  (K=1: 1+Σ|g_i|; K=2: +Σ_{i<j}|g_i|×|g_j|)",
+    "note": "Enumerated count includes redundant original-state evaluations (1 + |G| + C(|G|,2) for K=2). Minimal non-redundant count = 1 + Σ(|g_i|-1) + Σ_{i<j}(|g_i|-1)(|g_j|-1). Both are idempotent under AND semantics."
+  },
+  "results": [
+    {
+      "config": "K=1, G=[service]",
+      "eligible_groups": [2],
+      "num_candidates_enumerated": 14,
+      "num_candidates_minimal": 13,
+      "total_wallclock_seconds": 1.4,
+      "avg_wallclock_per_sample": 0.0029,
+      "avg_wallclock_per_candidate_ms": 0.21,
+      "k0_robust_pct": 99.80,
+      "kk_robust_pct": 98.40
+    },
+    {
+      "config": "K=1, G=[service, proto]",
+      "eligible_groups": [2, 0],
+      "num_candidates_enumerated": 25,
+      "num_candidates_minimal": 23,
+      "total_wallclock_seconds": 4.2,
+      "avg_wallclock_per_sample": 0.0084,
+      "avg_wallclock_per_candidate_ms": 0.34,
+      "k0_robust_pct": 99.80,
+      "kk_robust_pct": 97.80
+    },
+    {
+      "config": "K=1, G=[service, proto, state]",
+      "eligible_groups": [2, 0, 1],
+      "num_candidates_enumerated": 36,
+      "num_candidates_minimal": 33,
+      "total_wallclock_seconds": 7.0,
+      "avg_wallclock_per_sample": 0.0140,
+      "avg_wallclock_per_candidate_ms": 0.39,
+      "k0_robust_pct": 99.80,
+      "kk_robust_pct": 87.60
+    },
+    {
+      "config": "K=1, G=[service, proto, state, is_sm_ips_ports]",
+      "eligible_groups": [2, 0, 1, 3],
+      "num_candidates_enumerated": 38,
+      "num_candidates_minimal": 34,
+      "total_wallclock_seconds": 7.2,
+      "avg_wallclock_per_sample": 0.0145,
+      "avg_wallclock_per_candidate_ms": 0.38,
+      "k0_robust_pct": 99.80,
+      "kk_robust_pct": 87.00
+    },
+    {
+      "config": "K=1, G=[proto, state, service, is_sm_ips_ports, is_ftp_login]",
+      "eligible_groups": [0, 1, 2, 3, 4],
+      "num_candidates_enumerated": 42,
+      "num_candidates_minimal": 37,
+      "total_wallclock_seconds": 7.8,
+      "avg_wallclock_per_sample": 0.0155,
+      "avg_wallclock_per_candidate_ms": 0.38,
+      "k0_robust_pct": 99.80,
+      "kk_robust_pct": 86.20
+    },
+    {
+      "config": "K=2, G=[proto, state, service, is_sm_ips_ports, is_ftp_login]",
+      "eligible_groups": [0, 1, 2, 3, 4],
+      "num_candidates_enumerated": 667,
+      "num_candidates_minimal": 508,
+      "total_wallclock_seconds": 59.0,
+      "avg_wallclock_per_sample": 0.1179,
+      "avg_wallclock_per_candidate_ms": 0.18,
+      "k0_robust_pct": 99.80,
+      "kk_robust_pct": 61.60
+    }
+  ],
+  "key_findings": [
+    "K=1 scaling is near-linear with candidate count (R² ≈ 1.0)",
+    "K=2 requires 15.9x more candidates than K=1 5g (667 vs 42), takes 7.6x more wall-clock time (59.0s vs 7.8s) due to batched GPU efficiency",
+    "Per-candidate time decreases at higher candidate counts (0.38ms→0.18ms) due to amortized kernel launch overhead",
+    "K=1 robustness: 86.2% (5g) — attacker flips any single categorical group",
+    "K=2 robustness: 61.6% (5g) — attacker flips any pair of categorical groups",
+    "Adding is_sm_ips_ports (|G|=2) and is_ftp_login (|G|=4) to K=1 adds only 6 candidates (38→42) and 0.6s — marginal cost",
+    "The state group (|G|=11) is the dominant cost driver in K=1 (25→36, +11 candidates)"
+  ],
+  "files": [
+    "results/scalability_unsw_nb15_K1_g2.json",
+    "results/scalability_unsw_nb15_K1_g2_0.json",
+    "results/scalability_unsw_nb15_K1_g2_0_1.json",
+    "results/scalability_unsw_nb15_K1_g2_0_1_3.json",
+    "results/scalability_unsw_nb15_K1_g0_1_2_3_4.json",
+    "results/scalability_unsw_nb15_K2_g0_1_2_3_4.json"
+  ]
+}
