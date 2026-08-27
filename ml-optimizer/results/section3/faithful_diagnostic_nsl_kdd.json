@@ -1,0 +1,97 @@
+{
+  "description": "Section III faithful diagnostic: original AdvGuard snap (argmax -> nearest one-hot) with correct defaults",
+  "protocol": {
+    "attack": "pgd_attack_faithful (original AdvGuard snap, verbatim)",
+    "snap_logic": "torch.argmax -> F.one_hot (applied every PGD step)",
+    "continuous_cols": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "categorical_groups": [
+      [
+        4,
+        5,
+        6
+      ],
+      [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    ],
+    "epsilon_schedule": [
+      0.1,
+      0.12,
+      0.15
+    ],
+    "alpha": 0.01,
+    "steps": 40,
+    "random_start": true,
+    "denominator": "correct / total (standard)"
+  },
+  "models": {
+    "baseline": {
+      "path": "models/model.pth",
+      "sha256": "8cbcb9d5c9db208bf290fa525abd8939e89232894d33f46d30c6e4d6e39d6607",
+      "clean_pct": 80.51
+    },
+    "hardened": {
+      "path": "models/model_adv.pth",
+      "sha256": "f07d2e3798026fa5de51cd4778f03312947d187bb20a139d039be9b3bfffda8f",
+      "clean_pct": 80.57
+    }
+  },
+  "n_eval": 22543,
+  "n_total": 22543,
+  "results": {
+    "0.1": {
+      "baseline": {
+        "correct": 4532,
+        "total": 22543,
+        "acc_pct": 20.1
+      },
+      "hardened": {
+        "correct": 11487,
+        "total": 22543,
+        "acc_pct": 50.96
+      },
+      "wall_time_s": 8.2
+    },
+    "0.12": {
+      "baseline": {
+        "correct": 3628,
+        "total": 22543,
+        "acc_pct": 16.09
+      },
+      "hardened": {
+        "correct": 10388,
+        "total": 22543,
+        "acc_pct": 46.08
+      },
+      "wall_time_s": 6.9
+    },
+    "0.15": {
+      "baseline": {
+        "correct": 3621,
+        "total": 22543,
+        "acc_pct": 16.06
+      },
+      "hardened": {
+        "correct": 9099,
+        "total": 22543,
+        "acc_pct": 40.36
+      },
+      "wall_time_s": 6.8
+    }
+  }
+}
