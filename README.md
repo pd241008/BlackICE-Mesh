@@ -17,6 +17,20 @@ splits those concerns into independently deployable, polyglot services:
   Min-Max clamping). ~10M snap passes/sec on commodity hardware.
 - **ml-optimizer (Python)** — the retained PyTorch core: Min-Max adversarial training, FGSM/PGD/JSMA
   attacks, ensemble defence, Clean/Robust Accuracy + ASR telemetry. GPU-isolated via Docker.
+
+### Evaluation Conventions
+
+Three distinct evaluation conventions are used in this codebase. They are not interchangeable:
+
+| Convention | Categorical handling | α_cat | Denominator | Hardened @ ε=0.15 (NSL-KDD) |
+|---|---|---|---|---|
+| **Legacy** (AdvGuard original) | argmax→one-hot, alpha_cat=0.01 (dead code) | 0.01 | correct/total | 29.10% (external) / 27.69% (this repo) |
+| **SNAP** (gradient-snapped K=1) | Single best-by-gradient flip, applied once at end | 1.0 | full test set | 40.36% (faithful, full-scale) |
+| **EXH** (exhaustive K=1) | Enumerate all |G| one-hot states, continuous PGD on each, pick worst | 0.0 | clean-correct | 0.00% |
+
+The canonical result for Section III of the paper is **40.36%** (SNAP, full test set, n=22,543). The 77.28% figure is K=0 continuous-only (snap inactive) and is not a valid robustness measure.
+
+See `docs/01-documentation/adrs/001-canonical-exhaustive-evaluation.md` for the full framework.
 - **dashboard (Next.js App Router)** — gritty Watch-Dogs terminal UI with neobrutalist frames and
   glassmorphic floating panels, streaming realtime diagnostics over WebSocket.
 
@@ -47,6 +61,17 @@ graph TD
 | `ml-optimizer` | Python | RabbitMQ worker: attacks (FGSM/PGD/JSMA), defences (adversarial training / ensemble), baseline evaluation, ensemble training. Publishes telemetry. |
 | `dashboard` | Next.js | Realtime telemetry terminal. |
 | `infra` | compose | Orchestrates the four services + RabbitMQ + PostgreSQL. |
+
+### JSMA Caveat
+
+JSMA (Jacobian-based Saliency Map Attack) is included for completeness but is **not recommended** for mixed-norm evaluation. On UNSW-NB15, JSMA misses 12.0% of true adversarial examples that exhaustive K=1 correctly identifies, and is 10x slower. The non-gradient-based iteration rule ($t \to t \times 0.9$) does not satisfy the same Lipschitz convergence guarantees as PGD. Use PGD for all robustness claims.
+
+### Documentation
+
+- `docs/01-documentation/adrs/` — Architectural Decision Records (001–004)
+- `docs/02-postmortems/` — Postmortems (001–003) for evaluation artifacts and engineering failures
+- `ml-optimizer/results/` — Evaluation JSON results and workstream summary
+- `ml-optimizer/scripts/` — Diagnostic scripts: `consolidated_canonical_table.py`, `section3_faithful_diagnostic.py`, `eval_scalability.py`, `eval_jsma_vs_exhaustive.py`, `trace_logit_reversal.py`
 
 ## Getting Started
 

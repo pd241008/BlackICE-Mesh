@@ -41,5 +41,7 @@ The sequential shell script (`resume_multiseed_sequential.sh`) additionally prov
 
 **Batch size was set to 32,768** (from an earlier conservative 4,096) once sequential execution was confirmed stable. This gave a ~8x throughput improvement with no memory regression.
 
+**Connection to evaluation fidelity:** The streaming infrastructure validated here is what enables faithful full-scale evaluation at n=22,543 (vs. the small n=100 that overestimates robust accuracy by 7.64pp). The exhaustive evaluator also scales near-linearly: 14→42 candidates at 1.4→7.8s on UNSW-NB15, with K=2 (667 candidates) completing in 59.0s on an RTX 4050 Laptop.
+
 _See `app/ml/data/loader.py` → `StreamingParquetDataset` class._  
 _See `scratch/resume_multiseed_sequential.sh`._

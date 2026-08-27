@@ -44,10 +44,14 @@ The n=3 run revealed the following on CICIDS2017:
 | Curriculum | 41.6% ± 27.5pp |
 | RSC | 62.1% ± 13.7pp |
 
-The RSC "breakthrough" from the single-seed run dissolved entirely when variance was measured. Curriculum's accuracy ranged from 20.97% to 72.72% across three seeds — a 51.75pp swing from identical hyperparameters. The only variable was random initialization.
+The RSC "breakthrough" from the single-seed run dissolved entirely when variance was measured. Curriculum's accuracy ranged from 20.97% to 72.72% across three seeds — a 51.75pp swing from identical hyperparameters. Two independent sources of variance were identified: (a) model weight initialization across seeds, and (b) per-sample PGD stochasticity from random epsilon-ball initialization (`unified_pgd.py` line 35: `torch.empty_like(...).uniform_(-epsilon, epsilon)`).
 
 This confirmed that the single-seed CICIDS2017 ranking was a variance artifact. The paper's headline finding changed from "RSC significantly outperforms Curriculum" to "all three methods exhibit high initialization variance on CICIDS2017; no method is a robust winner." This is a more scientifically honest and more interesting finding.
 
 **The n=10 extension was triggered** because CICIDS2017's ±22-27pp variance makes it the dataset most at risk of publishing a false ranking. The ANOVA with full data will either confirm "no significant difference" or identify a genuine winner — either outcome is publishable.
+
+**Small-sample fragility (complementary axis):** Evaluation robustness depends on both seed count AND sample count. At n=100, the faithful evaluation yields 48.00% for the legacy hardened model at ε=0.15; at n=22,543, it drops to 40.36% — a 7.64pp overestimate at small scale. This is a different axis of variance from seed variance: even a single model's reported accuracy shifts materially with the evaluation sample size.
+
+**Outcomes:** The consolidated canonical table (`results/consolidated/canonical_both_conventions.json`) shows full-scale results across all datasets, methods, and both EXH/SNAP conventions. The faithful full-scale result for NSL-KDD Hardened is **40.36%** at ε=0.15 (not 77.28%, which is K=0 continuous-only, or 29.10%, which is unconstrained with disabled categorical channel).
 
 _See also: Postmortem-003 (the timing contradiction investigation that preceded the n=3 decision)._

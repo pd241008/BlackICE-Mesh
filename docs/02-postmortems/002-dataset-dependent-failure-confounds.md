@@ -32,4 +32,9 @@ We learned that:
 - **The Methods Do Generalize:** When properly forced to defend categorical permutations with $\alpha_{cat}=1.0$, RSC achieves an incredible 96.17% robust accuracy on UNSW-NB15 (up from 0.00%). Curriculum achieves 24.47% on NSL-KDD (up from 0.00%).
 - **Topology Dictates the Defense:** The optimal defense depends on the dimensionality of the categorical threat space. For simple topologies ($|G|=1$), Standard adversarial training is sufficient. For high-dimensionality topologies ($|G|>1$), RSC acts as a powerful regularizer to prevent overfitting.
 
+**Caveats on reported figures:**
+- **Checkpoint provenance:** The legacy `model_adv.pth` was inherited from the original AdvGuard monolith and underwent an additional 50 epochs of fine-tuning beyond the published weights (baseline report §1). Unified pipeline checkpoints are retrained from scratch and are not comparable.
+- **PGD nondeterminism:** `unified_pgd.py` uses random epsilon-ball initialization (line 35). Robust-accuracy figures are reproducible in distribution (±~1pp at n=500) rather than bit-for-bit deterministic.
+- **Faithful full-scale result:** Under the verified faithful attack with corrected defaults, the legacy hardened model achieves **40.36%** at ε=0.15 on the full test set (n=22,543). The 77.28% figure (K=0 continuous-only) and 29.10% figure (unconstrained, categorical disabled) are not comparable K=1 results.
+
 _See the corresponding ADR: [ADR-002: Unified Adversarial Training Framework](../01-documentation/adrs/002-unified-adversarial-training.md)_
