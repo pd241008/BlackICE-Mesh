@@ -1,0 +1,772 @@
+{
+  "description": "Logit-reversal trace: legacy AdvGuard-Hardened checkpoint (model_adv.pth), NSL-KDD full test set, EXH K=1 evaluator-matched",
+  "checkpoint_sha256": "f07d2e3798026fa5de51cd4778f03312947d187bb20a139d039be9b3bfffda8f",
+  "dataset": "nsl-kdd",
+  "n_total": 22543,
+  "clean_correct": 18162,
+  "clean_acc_pct": 80.57,
+  "exh_k1_archived": {
+    "correct": 0,
+    "total": 22543,
+    "source": "results/results_nsl_kdd_Hardened.json"
+  },
+  "evaluator": {
+    "semantics": "EXH K=1: enumerate every one-hot state per categorical group, continuous PGD-40 (eps=0.15, alpha=0.01, deterministic init, no random start) per state, pick worst by CE loss",
+    "epsilon": 0.15,
+    "alpha_cont": 0.01,
+    "pgd_steps": 40,
+    "continuous_cols": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "categorical_groups": [
+      [
+        4,
+        5,
+        6
+      ],
+      [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ]
+    ]
+  },
+  "traces": [
+    {
+      "test_idx": 4820,
+      "true_label": 1,
+      "clean_pred": 1,
+      "clean_logits": [
+        -6.98615837097168,
+        6.434330463409424
+      ],
+      "clean_probs": [
+        1.484414951846702e-06,
+        0.9999985694885254
+      ],
+      "margin_before": 13.420488,
+      "flips": [
+        {
+          "group": "protocol_type",
+          "group_idx": 0,
+          "group_size": 3,
+          "orig_active_col": 0,
+          "flipped_to_col": 1,
+          "flip_logits": [
+            -0.6297143697738647,
+            0.3946002423763275
+          ],
+          "flip_probs": [
+            0.2641878128051758,
+            0.7358121871948242
+          ],
+          "flip_pred": 1,
+          "margin_after": 1.024315,
+          "reversal": false
+        },
+        {
+          "group": "protocol_type",
+          "group_idx": 0,
+          "group_size": 3,
+          "orig_active_col": 0,
+          "flipped_to_col": 2,
+          "flip_logits": [
+            -1.4549800157546997,
+            1.3366270065307617
+          ],
+          "flip_probs": [
+            0.05777941644191742,
+            0.9422206282615662
+          ],
+          "flip_pred": 1,
+          "margin_after": 2.791607,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 0,
+          "flip_logits": [
+            2.4197452068328857,
+            -3.2688305377960205
+          ],
+          "flip_probs": [
+            0.9966270923614502,
+            0.0033729947172105312
+          ],
+          "flip_pred": 0,
+          "margin_after": -5.688576,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 2,
+          "flip_logits": [
+            -4.295345783233643,
+            3.458872079849243
+          ],
+          "flip_probs": [
+            0.0004287455521989614,
+            0.9995712637901306
+          ],
+          "flip_pred": 1,
+          "margin_after": 7.754218,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 3,
+          "flip_logits": [
+            2.660269260406494,
+            -3.4660818576812744
+          ],
+          "flip_probs": [
+            0.997820258140564,
+            0.0021797753870487213
+          ],
+          "flip_pred": 0,
+          "margin_after": -6.126351,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 4,
+          "flip_logits": [
+            1.2534916400909424,
+            -1.2630265951156616
+          ],
+          "flip_probs": [
+            0.9252917766571045,
+            0.07470828294754028
+          ],
+          "flip_pred": 0,
+          "margin_after": -2.516518,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 5,
+          "flip_logits": [
+            -0.066203273832798,
+            0.22494158148765564
+          ],
+          "flip_probs": [
+            0.42772361636161804,
+            0.5722763538360596
+          ],
+          "flip_pred": 1,
+          "margin_after": 0.291145,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 6,
+          "flip_logits": [
+            0.2342677116394043,
+            -0.23545792698860168
+          ],
+          "flip_probs": [
+            0.615318775177002,
+            0.38468119502067566
+          ],
+          "flip_pred": 0,
+          "margin_after": -0.469726,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 7,
+          "flip_logits": [
+            -3.85905122756958,
+            3.627021551132202
+          ],
+          "flip_probs": [
+            0.0005605269689112902,
+            0.9994394183158875
+          ],
+          "flip_pred": 1,
+          "margin_after": 7.486073,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 8,
+          "flip_logits": [
+            -0.6214366555213928,
+            0.2928759753704071
+          ],
+          "flip_probs": [
+            0.28611814975738525,
+            0.7138818502426147
+          ],
+          "flip_pred": 1,
+          "margin_after": 0.914313,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 9,
+          "flip_logits": [
+            -0.6371369361877441,
+            0.47032204270362854
+          ],
+          "flip_probs": [
+            0.24834491312503815,
+            0.7516550421714783
+          ],
+          "flip_pred": 1,
+          "margin_after": 1.107459,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 10,
+          "flip_logits": [
+            0.0317353829741478,
+            -0.32444873452186584
+          ],
+          "flip_probs": [
+            0.5881164073944092,
+            0.4118835926055908
+          ],
+          "flip_pred": 0,
+          "margin_after": -0.356184,
+          "reversal": true
+        }
+      ]
+    },
+    {
+      "test_idx": 0,
+      "true_label": 1,
+      "clean_pred": 1,
+      "clean_logits": [
+        -6.984569072723389,
+        6.432021617889404
+      ],
+      "clean_probs": [
+        1.490211957388965e-06,
+        0.9999984502792358
+      ],
+      "margin_before": 13.416591,
+      "flips": [
+        {
+          "group": "protocol_type",
+          "group_idx": 0,
+          "group_size": 3,
+          "orig_active_col": 0,
+          "flipped_to_col": 1,
+          "flip_logits": [
+            -0.6315215826034546,
+            0.3957217037677765
+          ],
+          "flip_probs": [
+            0.2636188864707947,
+            0.7363810539245605
+          ],
+          "flip_pred": 1,
+          "margin_after": 1.027243,
+          "reversal": false
+        },
+        {
+          "group": "protocol_type",
+          "group_idx": 0,
+          "group_size": 3,
+          "orig_active_col": 0,
+          "flipped_to_col": 2,
+          "flip_logits": [
+            -1.4525221586227417,
+            1.3332393169403076
+          ],
+          "flip_probs": [
+            0.05809847265481949,
+            0.9419015049934387
+          ],
+          "flip_pred": 1,
+          "margin_after": 2.785761,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 0,
+          "flip_logits": [
+            2.4180920124053955,
+            -3.2661030292510986
+          ],
+          "flip_probs": [
+            0.9966122508049011,
+            0.0033877526875585318
+          ],
+          "flip_pred": 0,
+          "margin_after": -5.684195,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 2,
+          "flip_logits": [
+            -4.295857906341553,
+            3.459120988845825
+          ],
+          "flip_probs": [
+            0.00042841953109018505,
+            0.9995716214179993
+          ],
+          "flip_pred": 1,
+          "margin_after": 7.754979,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 3,
+          "flip_logits": [
+            2.6609418392181396,
+            -3.466736078262329
+          ],
+          "flip_probs": [
+            0.9978231191635132,
+            0.002176891779527068
+          ],
+          "flip_pred": 0,
+          "margin_after": -6.127678,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 4,
+          "flip_logits": [
+            1.2536917924880981,
+            -1.262986421585083
+          ],
+          "flip_probs": [
+            0.9253027439117432,
+            0.07469720393419266
+          ],
+          "flip_pred": 0,
+          "margin_after": -2.516678,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 5,
+          "flip_logits": [
+            -0.06195015460252762,
+            0.22050544619560242
+          ],
+          "flip_probs": [
+            0.42985185980796814,
+            0.5701481699943542
+          ],
+          "flip_pred": 1,
+          "margin_after": 0.282456,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 6,
+          "flip_logits": [
+            0.24067944288253784,
+            -0.2433203160762787
+          ],
+          "flip_probs": [
+            0.6186919212341309,
+            0.38130807876586914
+          ],
+          "flip_pred": 0,
+          "margin_after": -0.484,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 7,
+          "flip_logits": [
+            -3.8578522205352783,
+            3.626965284347534
+          ],
+          "flip_probs": [
+            0.0005612304667010903,
+            0.9994387030601501
+          ],
+          "flip_pred": 1,
+          "margin_after": 7.484818,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 8,
+          "flip_logits": [
+            -0.6189694404602051,
+            0.2894911468029022
+          ],
+          "flip_probs": [
+            0.28731492161750793,
+            0.7126850485801697
+          ],
+          "flip_pred": 1,
+          "margin_after": 0.908461,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 9,
+          "flip_logits": [
+            -0.6375294923782349,
+            0.4705640375614166
+          ],
+          "flip_probs": [
+            0.24822649359703064,
+            0.7517735362052917
+          ],
+          "flip_pred": 1,
+          "margin_after": 1.108094,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 1,
+          "flipped_to_col": 10,
+          "flip_logits": [
+            0.03168834000825882,
+            -0.32510536909103394
+          ],
+          "flip_probs": [
+            0.5882640480995178,
+            0.4117359220981598
+          ],
+          "flip_pred": 0,
+          "margin_after": -0.356794,
+          "reversal": true
+        }
+      ]
+    },
+    {
+      "test_idx": 82,
+      "true_label": 1,
+      "clean_pred": 1,
+      "clean_logits": [
+        -4.185821056365967,
+        4.982021331787109
+      ],
+      "clean_probs": [
+        0.00010433045827085152,
+        0.9998956918716431
+      ],
+      "margin_before": 9.167843,
+      "flips": [
+        {
+          "group": "protocol_type",
+          "group_idx": 0,
+          "group_size": 3,
+          "orig_active_col": 2,
+          "flipped_to_col": 0,
+          "flip_logits": [
+            0.6267357468605042,
+            -0.5614885091781616
+          ],
+          "flip_probs": [
+            0.7664233446121216,
+            0.2335766702890396
+          ],
+          "flip_pred": 0,
+          "margin_after": -1.188224,
+          "reversal": true
+        },
+        {
+          "group": "protocol_type",
+          "group_idx": 0,
+          "group_size": 3,
+          "orig_active_col": 2,
+          "flipped_to_col": 1,
+          "flip_logits": [
+            -0.012918256223201752,
+            -0.5387651920318604
+          ],
+          "flip_probs": [
+            0.6285139322280884,
+            0.37148603796958923
+          ],
+          "flip_pred": 0,
+          "margin_after": -0.525847,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 6,
+          "flipped_to_col": 0,
+          "flip_logits": [
+            1.5162508487701416,
+            -2.412613868713379
+          ],
+          "flip_probs": [
+            0.9807133078575134,
+            0.01928669400513172
+          ],
+          "flip_pred": 0,
+          "margin_after": -3.928865,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 6,
+          "flipped_to_col": 1,
+          "flip_logits": [
+            -1.8218735456466675,
+            1.8089385032653809
+          ],
+          "flip_probs": [
+            0.025810809805989265,
+            0.9741892218589783
+          ],
+          "flip_pred": 1,
+          "margin_after": 3.630812,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 6,
+          "flipped_to_col": 2,
+          "flip_logits": [
+            -3.153226375579834,
+            2.4580674171447754
+          ],
+          "flip_probs": [
+            0.00364301516674459,
+            0.9963569045066833
+          ],
+          "flip_pred": 1,
+          "margin_after": 5.611294,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 6,
+          "flipped_to_col": 3,
+          "flip_logits": [
+            1.8368418216705322,
+            -2.4801766872406006
+          ],
+          "flip_probs": [
+            0.9868359565734863,
+            0.013163993135094643
+          ],
+          "flip_pred": 0,
+          "margin_after": -4.317019,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 6,
+          "flipped_to_col": 4,
+          "flip_logits": [
+            -0.9037048816680908,
+            0.6248126029968262
+          ],
+          "flip_probs": [
+            0.17821069061756134,
+            0.8217892646789551
+          ],
+          "flip_pred": 1,
+          "margin_after": 1.528517,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 6,
+          "flipped_to_col": 5,
+          "flip_logits": [
+            -3.1794896125793457,
+            3.8830196857452393
+          ],
+          "flip_probs": [
+            0.0008558924891985953,
+            0.9991440773010254
+          ],
+          "flip_pred": 1,
+          "margin_after": 7.06251,
+          "reversal": false
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 6,
+          "flipped_to_col": 7,
+          "flip_logits": [
+            2.615056037902832,
+            -3.0040695667266846
+          ],
+          "flip_probs": [
+            0.9963853359222412,
+            0.0036146994680166245
+          ],
+          "flip_pred": 0,
+          "margin_after": -5.619125,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 6,
+          "flipped_to_col": 8,
+          "flip_logits": [
+            -0.03447144478559494,
+            -0.053500980138778687
+          ],
+          "flip_probs": [
+            0.5047572255134583,
+            0.49524274468421936
+          ],
+          "flip_pred": 0,
+          "margin_after": -0.01903,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 6,
+          "flipped_to_col": 9,
+          "flip_logits": [
+            0.23839162290096283,
+            -0.5623546838760376
+          ],
+          "flip_probs": [
+            0.6901341080665588,
+            0.30986589193344116
+          ],
+          "flip_pred": 0,
+          "margin_after": -0.800746,
+          "reversal": true
+        },
+        {
+          "group": "service",
+          "group_idx": 1,
+          "group_size": 11,
+          "orig_active_col": 6,
+          "flipped_to_col": 10,
+          "flip_logits": [
+            -0.49734988808631897,
+            0.2812184989452362
+          ],
+          "flip_probs": [
+            0.3146285116672516,
+            0.685371458530426
+          ],
+          "flip_pred": 1,
+          "margin_after": 0.778568,
+          "reversal": false
+        }
+      ]
+    }
+  ],
+  "exh_break_check": [
+    {
+      "test_idx": 4820,
+      "broken_by_k1_exh": true,
+      "n_states": 15,
+      "worst_state_group_flipped": [
+        "service"
+      ],
+      "per_sample_note": "deterministic init, algorithm identical to canonical_mixed_norm_attack; full-batch authority is results/results_nsl_kdd_Hardened.json (0/22543)"
+    },
+    {
+      "test_idx": 0,
+      "broken_by_k1_exh": true,
+      "n_states": 15,
+      "worst_state_group_flipped": [
+        "service"
+      ],
+      "per_sample_note": "deterministic init, algorithm identical to canonical_mixed_norm_attack; full-batch authority is results/results_nsl_kdd_Hardened.json (0/22543)"
+    },
+    {
+      "test_idx": 82,
+      "broken_by_k1_exh": true,
+      "n_states": 15,
+      "worst_state_group_flipped": [
+        "service"
+      ],
+      "per_sample_note": "deterministic init, algorithm identical to canonical_mixed_norm_attack; full-batch authority is results/results_nsl_kdd_Hardened.json (0/22543)"
+    }
+  ]
+}
