@@ -60,3 +60,5 @@ The PYTHONPATH failure happened immediately after the FLOPs investigation. Atten
 2. `cicids2017_extended_seeds.sh` — added `PYTHONPATH=.` to both `python` invocations.
 3. `eval_unified.py` — added `--datasets` CLI flag to allow filtering to a subset of datasets, enabling the extended script to run CICIDS2017 evaluation only without touching NSL-KDD or UNSW-NB15 (which already have results for seeds 42-44).
 4. Post-run verification step added to protocol: after any batch script completes, run `ls models/unified/model_adv_*_seed{N}.pth` before reporting success.
+
+**Checkpoint provenance note:** All `models/unified/model_adv_*_seed*.pth` checkpoints are retrained from scratch via the unified pipeline (ADR-002) with identical hyperparameters. They are not the same weights as the legacy `model_adv.pth` (SHA: `f07d2e37...`), which was inherited from the original AdvGuard and underwent additional fine-tuning. The fabricated FLOPs claim (157x) about RSC's computational cost has been empirically contradicted by the scalability study: the exhaustive evaluator scales near-linearly, with K=2 (667 candidates) completing in 59.0s on an RTX 4050 Laptop.
